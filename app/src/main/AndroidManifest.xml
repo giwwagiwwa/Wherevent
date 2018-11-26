@@ -19,6 +19,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".Quedada" />
+        <activity android:name=".NewQuedada" />
+        <activity android:name=".AsistenciaQuedada" />
+        <activity android:name=".Ranking"></activity>
     </application>
 
 </manifest>
