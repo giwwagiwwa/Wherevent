@@ -8,8 +8,17 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
-public class ListaQuedadas extends AppCompatActivity {
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+
+public class ListaQuedadasActivity extends AppCompatActivity {
+
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private TextView testview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,13 +38,14 @@ public class ListaQuedadas extends AppCompatActivity {
 
         Quedada quedada1 = new Quedada();
 
+        testview = findViewById(R.id.testview);
 
-
-
-
-
-
-
+        db.collection("quedadas").document("quedadatest").addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
+                testview.setText(documentSnapshot.getString("descripcion"));
+            }
+        });
     }
 
     @Override
