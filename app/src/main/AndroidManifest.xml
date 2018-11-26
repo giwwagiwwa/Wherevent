@@ -22,7 +22,8 @@
         <activity android:name=".Quedada" />
         <activity android:name=".NewQuedada" />
         <activity android:name=".AsistenciaQuedada" />
-        <activity android:name=".Ranking"></activity>
+        <activity android:name=".Ranking" />
+        <activity android:name=".ConsultaQuedada"></activity>
     </application>
 
 </manifest>
