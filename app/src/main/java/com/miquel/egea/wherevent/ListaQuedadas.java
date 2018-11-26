@@ -26,6 +26,16 @@ public class ListaQuedadas extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+        Quedada quedada1 = new Quedada();
+
+
+
+
+
+
+
+
     }
 
     @Override
