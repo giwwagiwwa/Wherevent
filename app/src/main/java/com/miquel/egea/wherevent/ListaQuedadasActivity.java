@@ -18,7 +18,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 public class ListaQuedadasActivity extends AppCompatActivity {
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private TextView testview;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,12 +38,25 @@ public class ListaQuedadasActivity extends AppCompatActivity {
 
         Quedada quedada1 = new Quedada();
 
-        testview = findViewById(R.id.testview);
+        //referenciamos los objetos de la pantalla de prueba--> seran parte de la tarjeta del recycler view
+        final TextView tituloview = findViewById(R.id.title_view);
+        final TextView autorview = findViewById(R.id.autorview);
+        final TextView ubicacionview = findViewById(R.id.ubicacionview);
+        final TextView horaview = findViewById(R.id.horaview);
+        final TextView fechaview = findViewById(R.id.fechaview);
+        final TextView asistenview = findViewById(R.id.asistenview);
+        final TextView noasistenview = findViewById(R.id.noasistenview);
 
-        db.collection("quedadas").document("quedadatest").addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
+        db.collection("Quedadas").document("quedadas").addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
-                testview.setText(documentSnapshot.getString("descripcion"));
+                autorview.setText(documentSnapshot.getString("Autor"));
+                tituloview.setText(documentSnapshot.getString("Titulo"));
+                ubicacionview.setText(documentSnapshot.getString("Ubicacion"));
+                horaview.setText(documentSnapshot.getString("Hora"));
+                fechaview.setText(documentSnapshot.getString("Fecha"));
+                asistenview.setText(documentSnapshot.getString("Asisten"));
+                noasistenview.setText(documentSnapshot.getString("NoAsisten"));
             }
         });
     }
