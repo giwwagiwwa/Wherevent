@@ -1,4 +1,15 @@
 package com.miquel.egea.wherevent;
 
-public class NewQuedadaActivity {
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.widget.Toast;
+
+public class NewQuedadaActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_new_quedada);
+
+    }
 }

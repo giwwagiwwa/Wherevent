@@ -1,5 +1,6 @@
 package com.miquel.egea.wherevent;
 
+import android.content.Intent;
 import android.media.Image;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -29,14 +30,14 @@ public class ListaQuedadasActivity extends AppCompatActivity {
         setContentView(R.layout.activity_lista_quedadas);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        final Intent intent = new Intent(this, NewQuedadaActivity.class);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton btn_newquedada = (FloatingActionButton) findViewById(R.id.btn_newquedada);
+        btn_newquedada.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
+                    startActivity(intent);
+                }
         });
 
         Quedada quedada1 = new Quedada();
@@ -49,7 +50,7 @@ public class ListaQuedadasActivity extends AppCompatActivity {
         final TextView ubicacionview = findViewById(R.id.ubicacionview);
         final ImageView iconoview = findViewById(R.id.iconoview);
 
-        Glide.with(this).load("file:///android_res/drawable/bolos.png").into(iconoview);
+        Glide.with(this).load("file:///drawable/bolos.png").into(iconoview); //pregunta
 
 
         db.collection("Quedadas").document("quedadas").addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
@@ -60,7 +61,7 @@ public class ListaQuedadasActivity extends AppCompatActivity {
                 fechaview.setText(documentSnapshot.getString("Fecha"));
                 horaview.setText(documentSnapshot.getString("Hora"));
                 ubicacionview.setText(documentSnapshot.getString("Ubicacion"));
-                //asistenview.setText(documentSnapshot.getDouble("Asisten");
+                //asistenview.setText(documentSnapshot.getDouble("Asisten"); pregunta
                 //noasistenview.setText(documentSnapshot.getString("NoAsisten"));
             }
         });
@@ -87,4 +88,10 @@ public class ListaQuedadasActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+
+    //Recycler view
+
+
+
 }
