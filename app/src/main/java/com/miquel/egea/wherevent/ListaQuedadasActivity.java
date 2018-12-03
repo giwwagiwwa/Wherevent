@@ -42,6 +42,19 @@ public class ListaQuedadasActivity extends AppCompatActivity {
         });
 
         Quedada quedada1 = new Quedada();
+
+
+
+        //Recycler view
+
+        class ViewHolder extends RecyclerView.ViewHolder{
+
+
+            public ViewHolder(View itemView) {
+                super(itemView);
+            }
+        }
+
         final TextView titleview = findViewById(R.id.titleview);
         final TextView autorview = findViewById(R.id.autorview);
         final TextView fechaview = findViewById(R.id.fechaview);
@@ -90,17 +103,6 @@ public class ListaQuedadasActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
-    //Recycler view
-
-    class ViewHolder extends RecyclerView.ViewHolder{
-
-
-
-        public ViewHolder(View itemView) {
-            super(itemView);
-        }
-    }
 
 
 
