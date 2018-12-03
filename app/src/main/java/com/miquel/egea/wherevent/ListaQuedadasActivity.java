@@ -11,7 +11,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -49,7 +48,6 @@ public class ListaQuedadasActivity extends AppCompatActivity {
         final TextView asistenview = findViewById(R.id.asistenview);
         final TextView ubicacionview = findViewById(R.id.ubicacionview);
         final ImageView iconoview = findViewById(R.id.iconoview);
-
 
         Glide.with(this).load("file:///android_res/drawable/bolos.png").into(iconoview);
 
