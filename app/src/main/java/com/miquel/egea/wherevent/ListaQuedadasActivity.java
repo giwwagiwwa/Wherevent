@@ -1,5 +1,6 @@
 package com.miquel.egea.wherevent;
 
+import android.media.Image;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -8,8 +9,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -37,26 +41,29 @@ public class ListaQuedadasActivity extends AppCompatActivity {
         });
 
         Quedada quedada1 = new Quedada();
-
-        //referenciamos los objetos de la pantalla de prueba--> seran parte de la tarjeta del recycler view
-        final TextView tituloview = findViewById(R.id.title_view);
+        final TextView titleview = findViewById(R.id.titleview);
         final TextView autorview = findViewById(R.id.autorview);
-        final TextView ubicacionview = findViewById(R.id.ubicacionview);
-        final TextView horaview = findViewById(R.id.horaview);
         final TextView fechaview = findViewById(R.id.fechaview);
-        final TextView asistenview = findViewById(R.id.asistenview);
+        final TextView horaview = findViewById(R.id.horaview);
         final TextView noasistenview = findViewById(R.id.noasistenview);
+        final TextView asistenview = findViewById(R.id.asistenview);
+        final TextView ubicacionview = findViewById(R.id.ubicacionview);
+        final ImageView iconoview = findViewById(R.id.iconoview);
+
+
+        Glide.with(this).load("file:///android_res/drawable/bolos.png").into(iconoview);
+
 
         db.collection("Quedadas").document("quedadas").addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
+                titleview.setText(documentSnapshot.getString("Titulo"));
                 autorview.setText(documentSnapshot.getString("Autor"));
-                tituloview.setText(documentSnapshot.getString("Titulo"));
-                ubicacionview.setText(documentSnapshot.getString("Ubicacion"));
-                horaview.setText(documentSnapshot.getString("Hora"));
                 fechaview.setText(documentSnapshot.getString("Fecha"));
-                asistenview.setText(documentSnapshot.getString("Asisten"));
-                noasistenview.setText(documentSnapshot.getString("NoAsisten"));
+                horaview.setText(documentSnapshot.getString("Hora"));
+                ubicacionview.setText(documentSnapshot.getString("Ubicacion"));
+                //asistenview.setText(documentSnapshot.getDouble("Asisten");
+                //noasistenview.setText(documentSnapshot.getString("NoAsisten"));
             }
         });
     }
