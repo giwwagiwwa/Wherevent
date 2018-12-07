@@ -15,14 +15,17 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class ListaQuedadasActivity extends AppCompatActivity {
 
-    //private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private static final int NUEVA_QUEDADA = 0;
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private RecyclerView item_list;
-    public android.widget.Adapter adapter;
+    public Adapter adapter;
     List<Quedada> quedadas;
 
 
@@ -33,13 +36,13 @@ public class ListaQuedadasActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        final Intent intent = new Intent(this, NewQuedadaActivity.class);
 
         FloatingActionButton btn_newquedada = (FloatingActionButton) findViewById(R.id.btn_newquedada);
         btn_newquedada.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                    startActivity(intent);
+                Intent intent = new Intent(ListaQuedadasActivity.this, NewQuedadaActivity.class);
+                startActivityForResult(intent, NUEVA_QUEDADA);
                 }
         });
 
@@ -60,20 +63,13 @@ public class ListaQuedadasActivity extends AppCompatActivity {
 
         quedadas = new ArrayList<>();
         quedadas.add(new Quedada("ksdjfkj", "sdjflaskdjflaksdjf", "nose", "tsd", "sdf", "asdf", 1, 0));
-        quedadas.add(new Quedada("ksdjfkj", "sdjflaskdjflaksdjf", "nose", "tsd", "sdf", "asdf", 2, 1));
-        quedadas.add(new Quedada("ksdjfkj", "sdjflaskdjflaksdjf", "nose", "tsd", "sdf", "asdf", 3, 2));
-        quedadas.add(new Quedada("ksdjfkj", "sdjflaskdjflaksdjf", "nose", "tsd", "sdf", "asdf", 3, 3));
-        quedadas.add(new Quedada("ksdjfkj", "sdjflaskdjflaksdjf", "nose", "tsd", "sdf", "asdf", 3, 4));
-        quedadas.add(new Quedada("ksdjfkj", "sdjflaskdjflaksdjf", "nose", "tsd", "sdf", "asdf", 3, 5));
-        quedadas.add(new Quedada("ksdjfkj", "sdjflaskdjflaksdjf", "nose", "tsd", "sdf", "asdf", 3, 6));
-        quedadas.add(new Quedada("ksdjfkj", "sdjflaskdjflaksdjf", "nose", "tsd", "sdf", "asdf", 3, 7));
-        quedadas.add(new Quedada("ksdjfkj", "sdjflaskdjflaksdjf", "nose", "tsd", "sdf", "asdf", 3, 8));
-        quedadas.add(new Quedada("ksdjfkj", "sdjflaskdjflaksdjf", "nose", "tsd", "sdf", "asdf", 3, 9));
-        quedadas.add(new Quedada("ksdjfkj", "sdjflaskdjflaksdjf", "nose", "tsd", "sdf", "asdf", 3, 10));
+        quedadas.add(new Quedada("ksdjfkj", "sdjflaskdjflaksdjf", "nose", "tsd", "sdf", "asdf", 2, 0));
+        quedadas.add(new Quedada("ksdjfkj", "sdjflaskdjflaksdjf", "nose", "tsd", "sdf", "asdf", 3, 0));
 
         item_list = findViewById(R.id.item_list);
         item_list.setLayoutManager(new LinearLayoutManager(this));
-        item_list.setAdapter(new Adapter());
+        adapter = new Adapter();
+        item_list.setAdapter(adapter);
     }
 
     @Override
@@ -97,6 +93,26 @@ public class ListaQuedadasActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode==NUEVA_QUEDADA){
+            if (resultCode == RESULT_OK){
+                quedadas.add(new Quedada(data.getStringExtra("titulo"),
+                        data.getStringExtra("descripcion"),
+                        data.getStringExtra("ubicacion"),
+                        data.getStringExtra("fecha"),
+                        data.getStringExtra("hora"),
+                        "yomismo",
+                        1,
+                        3));
+                adapter.notifyItemInserted(quedadas.size()-1);
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    //RECYCLER VIEW LISTA QUEDADAS*******************************************************************************************
 
     class MyViewHolder extends RecyclerView.ViewHolder{
         TextView titleview;
@@ -156,6 +172,6 @@ public class ListaQuedadasActivity extends AppCompatActivity {
 
     }
 
-
+//FIN RECYCLER VIEW LISTA QUEDADAS **************************************************************************************
 
 }
