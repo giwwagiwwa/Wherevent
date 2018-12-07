@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -81,6 +82,7 @@ public class ListaQuedadasActivity extends AppCompatActivity {
         item_list.setLayoutManager(new LinearLayoutManager(this));
         adapter = new Adapter();
         item_list.setAdapter(adapter);
+        item_list.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
     }
 
     @Override

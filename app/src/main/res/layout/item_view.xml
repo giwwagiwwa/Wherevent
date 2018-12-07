@@ -17,7 +17,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/noasistenview"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+        app:layout_constraintTop_toBottomOf="@+id/user3view" />
 
     <TextView
         android:id="@+id/noasistenview"
@@ -27,7 +27,7 @@
         app:layout_constraintEnd_toStartOf="@+id/nocontestanview"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/asistenview"
-        app:layout_constraintTop_toBottomOf="@+id/imageView3" />
+        app:layout_constraintTop_toBottomOf="@+id/user2view" />
 
     <TextView
         android:id="@+id/titleview"
@@ -73,7 +73,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline"
         app:layout_constraintTop_toBottomOf="@+id/autorview"
-        app:srcCompat="@android:drawable/ic_menu_mylocation" />
+        app:srcCompat="@drawable/location"
+        android:contentDescription="TODO" />
 
     <TextView
         android:id="@+id/ubicacionview"
@@ -138,39 +139,39 @@
         app:layout_constraintEnd_toStartOf="@+id/noasistenview"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/guideline2"
-        app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+        app:layout_constraintTop_toBottomOf="@+id/user1view" />
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/user3view"
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/imageView3"
+        app:layout_constraintStart_toEndOf="@+id/user2view"
         app:layout_constraintTop_toBottomOf="@+id/horaview"
-        app:srcCompat="@drawable/user" />
+        app:srcCompat="@drawable/user3" />
 
     <ImageView
-        android:id="@+id/imageView3"
+        android:id="@+id/user2view"
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_marginTop="16dp"
-        app:layout_constraintEnd_toStartOf="@+id/imageView"
+        app:layout_constraintEnd_toStartOf="@+id/user3view"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/imageView2"
+        app:layout_constraintStart_toEndOf="@+id/user1view"
         app:layout_constraintTop_toBottomOf="@+id/horaview"
-        app:srcCompat="@drawable/user" />
+        app:srcCompat="@drawable/user2" />
 
     <ImageView
-        android:id="@+id/imageView2"
+        android:id="@+id/user1view"
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_marginTop="16dp"
-        app:layout_constraintEnd_toStartOf="@+id/imageView3"
+        app:layout_constraintEnd_toStartOf="@+id/user2view"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/guideline2"
         app:layout_constraintTop_toBottomOf="@+id/horaview"
-        app:srcCompat="@drawable/user" />
+        app:srcCompat="@drawable/user1" />
 
 </android.support.constraint.ConstraintLayout>

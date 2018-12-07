@@ -155,7 +155,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline5"
         app:layout_constraintTop_toTopOf="@+id/guideline4"
-        app:srcCompat="?attr/colorAccent" />
+        app:srcCompat="@drawable/user2" />
 
     <ImageView
         android:id="@+id/imageaceptar"
@@ -169,7 +169,7 @@
         app:layout_constraintEnd_toStartOf="@+id/guideline5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline4"
-        app:srcCompat="?attr/colorAccent" />
+        app:srcCompat="@drawable/user1" />
 
     <ImageView
         android:id="@+id/imagehora"
@@ -180,7 +180,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/horaview"
         app:layout_constraintStart_toStartOf="@+id/guideline3"
         app:layout_constraintTop_toTopOf="@+id/horaview"
-        app:srcCompat="?attr/colorAccent" />
+        app:srcCompat="@drawable/hora" />
 
     <ImageView
         android:id="@+id/imagefecha"
@@ -191,7 +191,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/fechaview"
         app:layout_constraintStart_toStartOf="@+id/guideline3"
         app:layout_constraintTop_toTopOf="@+id/fechaview"
-        app:srcCompat="?attr/colorAccent" />
+        app:srcCompat="@drawable/fecha" />
 
     <ImageView
         android:id="@+id/imageubicacion"
@@ -202,7 +202,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/ubicacionview"
         app:layout_constraintStart_toStartOf="@+id/guideline3"
         app:layout_constraintTop_toTopOf="@+id/ubicacionview"
-        app:srcCompat="?attr/colorAccent" />
+        app:srcCompat="@drawable/location" />
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline4"
