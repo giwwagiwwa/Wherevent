@@ -60,8 +60,16 @@ public class ListaQuedadasActivity extends AppCompatActivity {
 
         quedadas = new ArrayList<>();
         quedadas.add(new Quedada("ksdjfkj", "sdjflaskdjflaksdjf", "nose", "tsd", "sdf", "asdf", 1, 0));
-        quedadas.add(new Quedada("ksdjfkj", "sdjflaskdjflaksdjf", "nose", "tsd", "sdf", "asdf", 2, 0));
-        quedadas.add(new Quedada("ksdjfkj", "sdjflaskdjflaksdjf", "nose", "tsd", "sdf", "asdf", 3, 0));
+        quedadas.add(new Quedada("ksdjfkj", "sdjflaskdjflaksdjf", "nose", "tsd", "sdf", "asdf", 2, 1));
+        quedadas.add(new Quedada("ksdjfkj", "sdjflaskdjflaksdjf", "nose", "tsd", "sdf", "asdf", 3, 2));
+        quedadas.add(new Quedada("ksdjfkj", "sdjflaskdjflaksdjf", "nose", "tsd", "sdf", "asdf", 3, 3));
+        quedadas.add(new Quedada("ksdjfkj", "sdjflaskdjflaksdjf", "nose", "tsd", "sdf", "asdf", 3, 4));
+        quedadas.add(new Quedada("ksdjfkj", "sdjflaskdjflaksdjf", "nose", "tsd", "sdf", "asdf", 3, 5));
+        quedadas.add(new Quedada("ksdjfkj", "sdjflaskdjflaksdjf", "nose", "tsd", "sdf", "asdf", 3, 6));
+        quedadas.add(new Quedada("ksdjfkj", "sdjflaskdjflaksdjf", "nose", "tsd", "sdf", "asdf", 3, 7));
+        quedadas.add(new Quedada("ksdjfkj", "sdjflaskdjflaksdjf", "nose", "tsd", "sdf", "asdf", 3, 8));
+        quedadas.add(new Quedada("ksdjfkj", "sdjflaskdjflaksdjf", "nose", "tsd", "sdf", "asdf", 3, 9));
+        quedadas.add(new Quedada("ksdjfkj", "sdjflaskdjflaksdjf", "nose", "tsd", "sdf", "asdf", 3, 10));
 
         item_list = findViewById(R.id.item_list);
         item_list.setLayoutManager(new LinearLayoutManager(this));
@@ -114,6 +122,10 @@ public class ListaQuedadasActivity extends AppCompatActivity {
         }
     }
 
+    private static int iconos[] = { R.drawable.bbq, R.drawable.bolos, R.drawable.camping, R.drawable.cena, R.drawable.cine, R.drawable.copa,
+                                    R.drawable.estudio, R.drawable.globos, R.drawable.gym, R.drawable.pastel, R.drawable.playa, R.drawable.regalo,
+                                    R.drawable.viaje};
+
     class Adapter extends RecyclerView.Adapter<MyViewHolder> {
 
         //llenar lista manual
@@ -133,6 +145,8 @@ public class ListaQuedadasActivity extends AppCompatActivity {
             holder.fechaview.setText(model_item.getFecha());
             holder.horaview.setText(model_item.getHora());
             holder.ubicacionview.setText(model_item.getUbicacion());
+            holder.iconoview.setImageDrawable(getResources().getDrawable(iconos[model_item.getTipo_evento()]));
+            holder.iconoview.setBackgroundColor(getResources().getColor(R.color.alta));
         }
 
         @Override
