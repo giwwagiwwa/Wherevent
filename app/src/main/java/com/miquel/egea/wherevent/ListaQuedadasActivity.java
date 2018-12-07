@@ -41,19 +41,6 @@ public class ListaQuedadasActivity extends AppCompatActivity {
                 }
         });
 
-        Quedada quedada1 = new Quedada();
-
-
-
-        //Recycler view
-
-        class ViewHolder extends RecyclerView.ViewHolder{
-
-
-            public ViewHolder(View itemView) {
-                super(itemView);
-            }
-        }
 
         final TextView titleview = findViewById(R.id.titleview);
         final TextView autorview = findViewById(R.id.autorview);
@@ -75,8 +62,8 @@ public class ListaQuedadasActivity extends AppCompatActivity {
                 fechaview.setText(documentSnapshot.getString("Fecha"));
                 horaview.setText(documentSnapshot.getString("Hora"));
                 ubicacionview.setText(documentSnapshot.getString("Ubicacion"));
-                //asistenview.setText(documentSnapshot.getDouble("Asisten"); pregunta
-                //noasistenview.setText(documentSnapshot.getString("NoAsisten"));
+                asistenview.setText(documentSnapshot.getDouble("Asisten");
+                //noasistenview.setText(documentSnapshot.getDouble("NoAsisten"));
             }
         });
     }
@@ -103,6 +90,17 @@ public class ListaQuedadasActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
+    //Recycler view
+
+    class ViewHolder extends RecyclerView.ViewHolder{
+
+
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+        }
+    }
 
 
 
