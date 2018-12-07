@@ -1,34 +1,36 @@
 package com.miquel.egea.wherevent;
 
 import android.content.Intent;
-import android.media.Image;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ListaQuedadasActivity extends AppCompatActivity {
 
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    //private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private RecyclerView item_list;
+    public android.widget.Adapter adapter;
+    List<Quedada> quedadas;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lista_quedadas);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         final Intent intent = new Intent(this, NewQuedadaActivity.class);
@@ -41,20 +43,8 @@ public class ListaQuedadasActivity extends AppCompatActivity {
                 }
         });
 
-
-        final TextView titleview = findViewById(R.id.titleview);
-        final TextView autorview = findViewById(R.id.autorview);
-        final TextView fechaview = findViewById(R.id.fechaview);
-        final TextView horaview = findViewById(R.id.horaview);
-        final TextView noasistenview = findViewById(R.id.noasistenview);
-        final TextView asistenview = findViewById(R.id.asistenview);
-        final TextView ubicacionview = findViewById(R.id.ubicacionview);
-        final ImageView iconoview = findViewById(R.id.iconoview);
-
-        Glide.with(this).load("file:///drawable/bolos.png").into(iconoview); //pregunta
-
-
-        db.collection("Quedadas").document("quedadas").addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
+        //conexion firebase
+        /*db.collection("Quedadas").document("quedadas").addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
                 titleview.setText(documentSnapshot.getString("Titulo"));
@@ -62,10 +52,20 @@ public class ListaQuedadasActivity extends AppCompatActivity {
                 fechaview.setText(documentSnapshot.getString("Fecha"));
                 horaview.setText(documentSnapshot.getString("Hora"));
                 ubicacionview.setText(documentSnapshot.getString("Ubicacion"));
-                asistenview.setText(documentSnapshot.getDouble("Asisten");
+                asistenview.setText(Double.toString(documentSnapshot.getDouble("Asisten")));
                 //noasistenview.setText(documentSnapshot.getDouble("NoAsisten"));
             }
         });
+        */
+
+        quedadas = new ArrayList<>();
+        quedadas.add(new Quedada("ksdjfkj", "sdjflaskdjflaksdjf", "nose", "tsd", "sdf", "asdf", 1, 0));
+        quedadas.add(new Quedada("ksdjfkj", "sdjflaskdjflaksdjf", "nose", "tsd", "sdf", "asdf", 2, 0));
+        quedadas.add(new Quedada("ksdjfkj", "sdjflaskdjflaksdjf", "nose", "tsd", "sdf", "asdf", 3, 0));
+
+        item_list = findViewById(R.id.item_list);
+        item_list.setLayoutManager(new LinearLayoutManager(this));
+        item_list.setAdapter(new Adapter());
     }
 
     @Override
@@ -90,16 +90,56 @@ public class ListaQuedadasActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    class MyViewHolder extends RecyclerView.ViewHolder{
+        TextView titleview;
+        TextView autorview;
+        TextView fechaview;
+        TextView horaview;
+        TextView noasistenview;
+        TextView asistenview;
+        TextView ubicacionview;
+        ImageView iconoview;
 
-    //Recycler view
 
-    class ViewHolder extends RecyclerView.ViewHolder{
-
-
-
-        public ViewHolder(View itemView) {
+        public MyViewHolder(View itemView) {
             super(itemView);
+            this.titleview = itemView.findViewById(R.id.titleview);
+            this.autorview = itemView.findViewById(R.id.autorview);
+            this.fechaview = itemView.findViewById(R.id.fechaview);
+            this.horaview = itemView.findViewById(R.id.horaview);
+            this.noasistenview = itemView.findViewById(R.id.noasistenview);
+            this.asistenview = itemView.findViewById(R.id.asistenview);
+            this.ubicacionview = itemView.findViewById(R.id.ubicacionview);
+            this.iconoview = itemView.findViewById(R.id.iconoview);
         }
+    }
+
+    class Adapter extends RecyclerView.Adapter<MyViewHolder> {
+
+        //llenar lista manual
+
+        @NonNull
+        @Override
+        public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View itemView = getLayoutInflater().inflate(R.layout.item_view,parent,false);
+            return new MyViewHolder(itemView);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+            Quedada model_item = quedadas.get(position);
+            holder.titleview.setText(model_item.getTitulo());
+            holder.autorview.setText(model_item.getAutor());
+            holder.fechaview.setText(model_item.getFecha());
+            holder.horaview.setText(model_item.getHora());
+            holder.ubicacionview.setText(model_item.getUbicacion());
+        }
+
+        @Override
+        public int getItemCount() {
+            return quedadas.size();
+        }
+
     }
 
 
