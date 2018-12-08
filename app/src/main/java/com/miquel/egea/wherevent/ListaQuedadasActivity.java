@@ -64,20 +64,8 @@ public class ListaQuedadasActivity extends AppCompatActivity {
 
         quedadas = new ArrayList<>();
         quedadas.add(new Quedada("Barbacoa", "sdjflaskdjflaksdjf", "Campo", "15/12/2018", "15:00", "Rodolfo", 1, 0));
-        quedadas.add(new Quedada("ksdjfkj", "sdjflaskdjflaksdjf", "nose", "tsd", "sdf", "asdf", 2, 1));
-        quedadas.add(new Quedada("ksdjfkj", "sdjflaskdjflaksdjf", "nose", "tsd", "sdf", "asdf", 3, 2));
-        quedadas.add(new Quedada("ksdjfkj", "sdjflaskdjflaksdjf", "nose", "tsd", "sdf", "asdf", 3, 3));
-        quedadas.add(new Quedada("ksdjfkj", "sdjflaskdjflaksdjf", "nose", "tsd", "sdf", "asdf", 3, 4));
-        quedadas.add(new Quedada("ksdjfkj", "sdjflaskdjflaksdjf", "nose", "tsd", "sdf", "asdf", 3, 5));
-        quedadas.add(new Quedada("ksdjfkj", "sdjflaskdjflaksdjf", "nose", "tsd", "sdf", "asdf", 3, 6));
-        quedadas.add(new Quedada("ksdjfkj", "sdjflaskdjflaksdjf", "nose", "tsd", "sdf", "asdf", 3, 7));
-        quedadas.add(new Quedada("ksdjfkj", "sdjflaskdjflaksdjf", "nose", "tsd", "sdf", "asdf", 3, 8));
-        quedadas.add(new Quedada("ksdjfkj", "sdjflaskdjflaksdjf", "nose", "tsd", "sdf", "asdf", 3, 9));
-        quedadas.add(new Quedada("ksdjfkj", "sdjflaskdjflaksdjf", "nose", "tsd", "sdf", "asdf", 3, 10));
-        quedadas.add(new Quedada("ksdjfkj", "sdjflaskdjflaksdjf", "nose", "tsd", "sdf", "asdf", 3, 11));
-        quedadas.add(new Quedada("ksdjfkj", "sdjflaskdjflaksdjf", "nose", "tsd", "sdf", "asdf", 3, 12));
 
-
+        //layout y adaptador RecyclerView
         item_list = findViewById(R.id.item_list);
         item_list.setLayoutManager(new LinearLayoutManager(this));
         adapter = new Adapter();
@@ -106,7 +94,8 @@ public class ListaQuedadasActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
+    //FIN MENU 3 PUNTOS
+    //recuperamos info de la creación de un evento nuevo
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode==NUEVA_QUEDADA){
@@ -151,9 +140,6 @@ public class ListaQuedadasActivity extends AppCompatActivity {
         }
     }
 
-    private static int iconos[] = { R.drawable.bbq, R.drawable.bolos, R.drawable.camping, R.drawable.cena, R.drawable.cine, R.drawable.copa,
-                                    R.drawable.estudio, R.drawable.globos, R.drawable.gym, R.drawable.pastel, R.drawable.playa, R.drawable.regalo,
-                                    R.drawable.viaje};
 
     class Adapter extends RecyclerView.Adapter<MyViewHolder> {
 
@@ -187,4 +173,7 @@ public class ListaQuedadasActivity extends AppCompatActivity {
 
 //FIN RECYCLER VIEW LISTA QUEDADAS **************************************************************************************
 
+    private static int iconos[] = { R.drawable.bbq, R.drawable.bolos, R.drawable.camping, R.drawable.cena, R.drawable.cine, R.drawable.copa,
+            R.drawable.estudio, R.drawable.globos, R.drawable.gym, R.drawable.pastel, R.drawable.playa, R.drawable.regalo,
+            R.drawable.viaje};
 }

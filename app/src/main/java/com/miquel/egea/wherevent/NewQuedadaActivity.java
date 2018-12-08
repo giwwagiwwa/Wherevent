@@ -1,12 +1,23 @@
 package com.miquel.egea.wherevent;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.media.Image;
+import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Adapter;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.List;
 
 public class NewQuedadaActivity extends AppCompatActivity {
     EditText tituloedit;
@@ -14,6 +25,11 @@ public class NewQuedadaActivity extends AppCompatActivity {
     EditText fechaedit;
     EditText horaedit;
     EditText descripcionedit;
+    private static int iconos[] = { R.drawable.bbq, R.drawable.bolos, R.drawable.camping, R.drawable.cena, R.drawable.cine, R.drawable.copa,
+            R.drawable.estudio, R.drawable.globos, R.drawable.gym, R.drawable.pastel, R.drawable.playa, R.drawable.regalo,
+            R.drawable.viaje,R.drawable.copa};
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,7 +40,51 @@ public class NewQuedadaActivity extends AppCompatActivity {
         horaedit = this.findViewById(R.id.horaedit);
         descripcionedit = this.findViewById(R.id.descripcionedit);
 
+        RecyclerView mylist = findViewById(R.id.recyclerView2);
+        //creamos el layout HORIZONTAL
+        LinearLayoutManager layoutManager
+                = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        mylist.setLayoutManager(layoutManager);
+        mylist.setAdapter(new MyAdapter());
     }
+    //dar menos enfasis a los otros iconos(posible?)
+    public void onClickIconSelect(View view) {
+
+    }
+
+    //recycler view iconos
+    class ViewHolder extends RecyclerView.ViewHolder{
+        ImageView image_view;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+            this.image_view = itemView.findViewById(R.id.image_view);
+        }
+
+    }
+
+    class MyAdapter extends RecyclerView.Adapter<ViewHolder>{
+
+        @NonNull
+        @Override
+        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View itemView = getLayoutInflater()
+                    .inflate(R.layout.icono_view,parent,false);
+            return new ViewHolder(itemView);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+            holder.image_view.setImageResource(iconos[position]);
+        }
+
+        @Override
+        public int getItemCount() {
+            return iconos.length;
+        }
+    }
+
+    //fin recycler view iconos
 
     public void onClickCrear(View view) {
         String titulo_edit = tituloedit.getText().toString();
@@ -40,6 +100,5 @@ public class NewQuedadaActivity extends AppCompatActivity {
         data.putExtra("descripcion",descripcion_edit);
         setResult(RESULT_OK,data);
         finish();
-
     }
 }
