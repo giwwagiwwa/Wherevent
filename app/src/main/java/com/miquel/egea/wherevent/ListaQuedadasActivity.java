@@ -139,7 +139,23 @@ public class ListaQuedadasActivity extends AppCompatActivity {
             this.asistenview = itemView.findViewById(R.id.asistenview);
             this.ubicacionview = itemView.findViewById(R.id.ubicacionview);
             this.iconoview = itemView.findViewById(R.id.iconoview);
+
+            //añadimos un listener a los elementos quedadas
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onClickEvento(getAdapterPosition());
+                }
+            });
         }
+    }
+
+    private void onClickEvento(int evento_position) {
+        Intent intent = new Intent(this, ConsultaQuedadaActivity.class);
+        intent.putExtra("titulo",quedadas.get(evento_position).getTitulo());
+        intent.putExtra("ubicacion",quedadas.get(evento_position).getUbicacion());
+        intent.putExtra("hora",quedadas.get(evento_position).getHora());
+        startActivityForResult(intent,0);
     }
 
 
