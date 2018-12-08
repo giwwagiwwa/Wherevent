@@ -63,7 +63,7 @@ public class ListaQuedadasActivity extends AppCompatActivity {
         */
 
         quedadas = new ArrayList<>();
-        quedadas.add(new Quedada("ksdjfkj", "sdjflaskdjflaksdjf", "nose", "tsd", "sdf", "asdf", 1, 0));
+        quedadas.add(new Quedada("Barbacoa", "sdjflaskdjflaksdjf", "Campo", "15/12/2018", "15:00", "Rodolfo", 1, 0));
         quedadas.add(new Quedada("ksdjfkj", "sdjflaskdjflaksdjf", "nose", "tsd", "sdf", "asdf", 2, 1));
         quedadas.add(new Quedada("ksdjfkj", "sdjflaskdjflaksdjf", "nose", "tsd", "sdf", "asdf", 3, 2));
         quedadas.add(new Quedada("ksdjfkj", "sdjflaskdjflaksdjf", "nose", "tsd", "sdf", "asdf", 3, 3));
