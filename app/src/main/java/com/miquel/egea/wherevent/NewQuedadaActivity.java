@@ -25,9 +25,10 @@ public class NewQuedadaActivity extends AppCompatActivity {
     EditText fechaedit;
     EditText horaedit;
     EditText descripcionedit;
+    Integer tipoevento=0;
     private static int iconos[] = { R.drawable.bbq, R.drawable.bolos, R.drawable.camping, R.drawable.cena, R.drawable.cine, R.drawable.copa,
-            R.drawable.estudio, R.drawable.globos, R.drawable.gym, R.drawable.pastel, R.drawable.playa, R.drawable.regalo,
-            R.drawable.viaje,R.drawable.copa};
+            R.drawable.estudio,R.drawable.globos, R.drawable.gym, R.drawable.pastel, R.drawable.playa, R.drawable.regalo,
+            R.drawable.viaje};
 
 
     @Override
@@ -47,10 +48,6 @@ public class NewQuedadaActivity extends AppCompatActivity {
         mylist.setLayoutManager(layoutManager);
         mylist.setAdapter(new MyAdapter());
     }
-    //dar menos enfasis a los otros iconos(posible?)
-    public void onClickIconSelect(View view) {
-
-    }
 
     //recycler view iconos
     class ViewHolder extends RecyclerView.ViewHolder{
@@ -59,8 +56,19 @@ public class NewQuedadaActivity extends AppCompatActivity {
         public ViewHolder(View itemView) {
             super(itemView);
             this.image_view = itemView.findViewById(R.id.image_view);
+            //añadimos listener a los iconos para saber cual clicamos
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onClickIconSelect(getAdapterPosition());
+                }
+            });
         }
+    }
 
+    private void onClickIconSelect(int position) {
+        Toast.makeText(this, "glewgjelwjalge", Toast.LENGTH_SHORT).show();
+        tipoevento=position;
     }
 
     class MyAdapter extends RecyclerView.Adapter<ViewHolder>{
@@ -98,6 +106,7 @@ public class NewQuedadaActivity extends AppCompatActivity {
         data.putExtra("fecha",fecha_edit);
         data.putExtra("hora",hora_edit);
         data.putExtra("descripcion",descripcion_edit);
+        data.putExtra("tipoevento",tipoevento);
         setResult(RESULT_OK,data);
         finish();
     }

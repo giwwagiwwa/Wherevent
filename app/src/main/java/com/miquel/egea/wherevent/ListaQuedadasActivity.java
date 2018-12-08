@@ -28,6 +28,9 @@ public class ListaQuedadasActivity extends AppCompatActivity {
     private RecyclerView item_list;
     public Adapter adapter;
     List<Quedada> quedadas;
+    private static int iconos[] = { R.drawable.bbq, R.drawable.bolos, R.drawable.camping, R.drawable.cena, R.drawable.cine, R.drawable.copa,
+            R.drawable.estudio, R.drawable.globos, R.drawable.gym, R.drawable.pastel, R.drawable.playa, R.drawable.regalo,
+            R.drawable.viaje};
 
 
     @Override
@@ -63,7 +66,6 @@ public class ListaQuedadasActivity extends AppCompatActivity {
         */
 
         quedadas = new ArrayList<>();
-        quedadas.add(new Quedada("Barbacoa", "sdjflaskdjflaksdjf", "Campo", "15/12/2018", "15:00", "Rodolfo", 1, 0));
 
         //layout y adaptador RecyclerView
         item_list = findViewById(R.id.item_list);
@@ -106,8 +108,8 @@ public class ListaQuedadasActivity extends AppCompatActivity {
                         data.getStringExtra("fecha"),
                         data.getStringExtra("hora"),
                         "yomismo",
-                        1,
-                        3));
+                        3,
+                        data.getIntExtra("tipoevento",-1)));
                 adapter.notifyItemInserted(quedadas.size()-1);
             }
         }
@@ -160,20 +162,16 @@ public class ListaQuedadasActivity extends AppCompatActivity {
             holder.fechaview.setText(model_item.getFecha());
             holder.horaview.setText(model_item.getHora());
             holder.ubicacionview.setText(model_item.getUbicacion());
-            holder.iconoview.setImageDrawable(getResources().getDrawable(iconos[model_item.getTipo_evento()]));
+            holder.iconoview.setImageResource(iconos[model_item.getTipo_evento()]);
             holder.iconoview.setBackgroundColor(getResources().getColor(R.color.alta));
         }
-
         @Override
         public int getItemCount() {
             return quedadas.size();
         }
-
     }
 
 //FIN RECYCLER VIEW LISTA QUEDADAS **************************************************************************************
 
-    private static int iconos[] = { R.drawable.bbq, R.drawable.bolos, R.drawable.camping, R.drawable.cena, R.drawable.cine, R.drawable.copa,
-            R.drawable.estudio, R.drawable.globos, R.drawable.gym, R.drawable.pastel, R.drawable.playa, R.drawable.regalo,
-            R.drawable.viaje};
+
 }
