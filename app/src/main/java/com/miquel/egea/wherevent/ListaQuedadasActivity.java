@@ -9,14 +9,25 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +42,6 @@ public class ListaQuedadasActivity extends AppCompatActivity {
     private static int iconos[] = { R.drawable.bbq, R.drawable.bolos, R.drawable.camping, R.drawable.cena, R.drawable.cine, R.drawable.copa,
             R.drawable.estudio, R.drawable.globos, R.drawable.gym, R.drawable.pastel, R.drawable.playa, R.drawable.regalo,
             R.drawable.viaje};
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,23 +59,15 @@ public class ListaQuedadasActivity extends AppCompatActivity {
                 startActivityForResult(intent, NUEVA_QUEDADA);
                 }
         });
-
+        quedadas = new ArrayList<>();
         //conexion firebase
         /*db.collection("Quedadas").document("quedadas").addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
-                titleview.setText(documentSnapshot.getString("Titulo"));
-                autorview.setText(documentSnapshot.getString("Autor"));
-                fechaview.setText(documentSnapshot.getString("Fecha"));
-                horaview.setText(documentSnapshot.getString("Hora"));
-                ubicacionview.setText(documentSnapshot.getString("Ubicacion"));
-                asistenview.setText(Double.toString(documentSnapshot.getDouble("Asisten")));
                 //noasistenview.setText(documentSnapshot.getDouble("NoAsisten"));
             }
-        });
-        */
-
-        quedadas = new ArrayList<>();
+        });*/
+        //recorrer documentos creados en Firebase --> actualizar quedadas existentes (filtrar con el identificador = Id del documento) y crear(?) o eliminar las que no salgan o si en local
 
         //layout y adaptador RecyclerView
         item_list = findViewById(R.id.item_list);
@@ -73,6 +75,23 @@ public class ListaQuedadasActivity extends AppCompatActivity {
         adapter = new Adapter();
         item_list.setAdapter(adapter);
         item_list.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        db.collection("Quedadas").addSnapshotListener(this, new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
+                quedadas.clear();
+                for (DocumentSnapshot doc : documentSnapshots) {
+                    quedadas.add(new Quedada(doc.getString("Titulo"), "xxxx", "xxx", "000000", "0000", "autor", 0, 0));
+                }
+                adapter.notifyDataSetChanged();
+            }
+        });
+
     }
 
     @Override
@@ -102,15 +121,22 @@ public class ListaQuedadasActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode==NUEVA_QUEDADA){
             if (resultCode == RESULT_OK){
-                quedadas.add(new Quedada(data.getStringExtra("titulo"),
+                Quedada nueva = new Quedada(data.getStringExtra("titulo"),
                         data.getStringExtra("descripcion"),
                         data.getStringExtra("ubicacion"),
                         data.getStringExtra("fecha"),
                         data.getStringExtra("hora"),
                         "yomismo",
                         3,
-                        data.getIntExtra("tipoevento",-1)));
-                adapter.notifyItemInserted(quedadas.size()-1);
+                        data.getIntExtra("tipoevento",-1)
+                );
+                db.collection("Quedadas").add(nueva).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        Log.i("Wherevent", "He grabado la nueva quedada");
+                    }
+                });
+                //adapter.notifyItemInserted(quedadas.size()-1);
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -157,12 +183,12 @@ public class ListaQuedadasActivity extends AppCompatActivity {
         intent.putExtra("hora",quedadas.get(evento_position).getHora());
         intent.putExtra("fecha",quedadas.get(evento_position).getFecha());
         intent.putExtra("tipoevento",quedadas.get(evento_position).getTipo_evento());
+        intent.putExtra("descripcion",quedadas.get(evento_position).getDescripción());
         startActivity(intent);
     }
 
 
     class Adapter extends RecyclerView.Adapter<MyViewHolder> {
-
         //llenar lista manual
 
         @NonNull
