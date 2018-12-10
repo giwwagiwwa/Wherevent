@@ -155,7 +155,9 @@ public class ListaQuedadasActivity extends AppCompatActivity {
         intent.putExtra("titulo",quedadas.get(evento_position).getTitulo());
         intent.putExtra("ubicacion",quedadas.get(evento_position).getUbicacion());
         intent.putExtra("hora",quedadas.get(evento_position).getHora());
-        startActivityForResult(intent,0);
+        intent.putExtra("fecha",quedadas.get(evento_position).getFecha());
+        intent.putExtra("tipoevento",quedadas.get(evento_position).getTipo_evento());
+        startActivity(intent);
     }
 
 

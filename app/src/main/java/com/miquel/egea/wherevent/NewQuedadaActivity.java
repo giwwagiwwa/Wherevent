@@ -133,7 +133,7 @@ public class NewQuedadaActivity extends AppCompatActivity {
     }
 
     private void onClickIconSelect(int position) {
-        Toast.makeText(this, "glewgjelwjalge", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Icono seleccionado", Toast.LENGTH_SHORT).show();
         tipoevento=position;
     }
 
