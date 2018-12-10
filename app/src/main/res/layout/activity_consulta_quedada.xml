@@ -98,7 +98,7 @@
     <ImageView
         android:id="@+id/fondoview"
         android:layout_width="0dp"
-        android:layout_height="75dp"
+        android:layout_height="0dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="24dp"
         android:layout_marginLeft="24dp"
