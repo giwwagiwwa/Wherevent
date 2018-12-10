@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -10,13 +10,14 @@
         android:id="@+id/titleview"
         android:layout_width="0dp"
         android:layout_height="32dp"
+        android:layout_marginBottom="2dp"
         android:layout_marginEnd="8dp"
         android:layout_marginLeft="24dp"
         android:layout_marginRight="8dp"
         android:layout_marginStart="24dp"
         android:layout_marginTop="8dp"
         android:text="Cena Cumpleaños"
-        android:textSize="24sp"
+        android:textSize="25sp"
         app:layout_constraintBottom_toTopOf="@+id/divider"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -33,6 +34,7 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="4dp"
         android:text="Bilal El Mahdali"
+        android:textStyle="italic"
         app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -92,6 +94,24 @@
         app:layout_constraintTop_toTopOf="@+id/guideline"
         app:srcCompat="?attr/actionModeSplitBackground" />
 
+    <ImageView
+        android:id="@+id/fondoview"
+        android:layout_width="0dp"
+        android:layout_height="75dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginRight="24dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline2"
+        app:layout_constraintVertical_bias="1.0"
+        app:srcCompat="@color/fondo" />
+
     <TextView
         android:id="@+id/ubicacionview"
         android:layout_width="0dp"
@@ -104,6 +124,7 @@
         android:layout_marginTop="8dp"
         android:gravity="center_vertical"
         android:text="carrer colom"
+        android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/fechaview"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/imageubicacion"
@@ -121,6 +142,7 @@
         android:layout_marginTop="8dp"
         android:gravity="center_vertical"
         android:text="27/11/2018"
+        android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/horaview"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/imagefecha"
@@ -138,6 +160,7 @@
         android:layout_marginTop="8dp"
         android:gravity="center_vertical"
         android:text="21:30"
+        android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/guideline2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/imagehora"
@@ -145,8 +168,8 @@
 
     <ImageView
         android:id="@+id/imagedeclinar"
-        android:layout_width="11dp"
-        android:layout_height="11dp"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
         android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
@@ -159,8 +182,8 @@
 
     <ImageView
         android:id="@+id/imageaceptar"
-        android:layout_width="11dp"
-        android:layout_height="11dp"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
         android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
@@ -173,8 +196,8 @@
 
     <ImageView
         android:id="@+id/imagehora"
-        android:layout_width="11dp"
-        android:layout_height="11dp"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="@+id/horaview"
@@ -184,8 +207,8 @@
 
     <ImageView
         android:id="@+id/imagefecha"
-        android:layout_width="11dp"
-        android:layout_height="11dp"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="@+id/fechaview"
@@ -195,8 +218,8 @@
 
     <ImageView
         android:id="@+id/imageubicacion"
-        android:layout_width="11dp"
-        android:layout_height="11dp"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="@+id/ubicacionview"
@@ -223,10 +246,11 @@
         android:layout_marginTop="8dp"
         android:text="fiesta de cumpleaños de mi aniversario"
         android:textSize="12sp"
-        app:layout_constraintBottom_toTopOf="@+id/guideline4"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline2" />
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/fondoview"
+        app:layout_constraintEnd_toEndOf="@+id/fondoview"
+        app:layout_constraintStart_toStartOf="@+id/fondoview"
+        app:layout_constraintTop_toTopOf="@+id/fondoview" />
 
     <Button
         android:id="@+id/aceptar_btn"
@@ -334,5 +358,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline5"
         app:layout_constraintTop_toBottomOf="@+id/imagedeclinar" />
+
 
 </android.support.constraint.ConstraintLayout>
