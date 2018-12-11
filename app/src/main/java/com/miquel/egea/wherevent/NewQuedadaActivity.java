@@ -1,7 +1,9 @@
 package com.miquel.egea.wherevent;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -32,12 +34,18 @@ public class NewQuedadaActivity extends AppCompatActivity {
     TextView fechaedit;
     TextView horaedit;
     EditText descripcionedit;
-    Integer tipoevento=0;
+    Integer tipoevento;
     private DatePickerDialog.OnDateSetListener fechaeditListener;
     private TimePickerDialog.OnTimeSetListener horaeditListener;
     private static int iconos[] = { R.drawable.bbq, R.drawable.bolos, R.drawable.camping, R.drawable.cena, R.drawable.cine, R.drawable.copa,
             R.drawable.estudio,R.drawable.globos, R.drawable.gym, R.drawable.pastel, R.drawable.playa, R.drawable.regalo,
             R.drawable.viaje};
+    private boolean textovacio;
+    private String titulo_edit;
+    private String ubicacion_edit;
+    private String fecha_edit;
+    private String hora_edit;
+    private String descripcion_edit;
 
 
     @Override
@@ -102,9 +110,6 @@ public class NewQuedadaActivity extends AppCompatActivity {
             }
         };
 
-
-
-
         RecyclerView mylist = findViewById(R.id.recyclerView2);
         //creamos el layout HORIZONTAL
         LinearLayoutManager layoutManager
@@ -113,7 +118,18 @@ public class NewQuedadaActivity extends AppCompatActivity {
         mylist.setAdapter(new MyAdapter());
     }
 
+    @Override
+    protected void onStart() {
+        textovacio=false;
+        titulo_edit="";
+        fecha_edit="";
+        hora_edit="";
+        descripcion_edit="";
+        ubicacion_edit="";
+        tipoevento=-1;
 
+        super.onStart();
+    }
 
     //recycler view iconos
     class ViewHolder extends RecyclerView.ViewHolder{
@@ -135,10 +151,10 @@ public class NewQuedadaActivity extends AppCompatActivity {
     private void onClickIconSelect(int position) {
         Toast.makeText(this, "Icono seleccionado", Toast.LENGTH_SHORT).show();
         tipoevento=position;
+        //nos quedamos con la posicion del icono en la lista
     }
 
     class MyAdapter extends RecyclerView.Adapter<ViewHolder>{
-
         @NonNull
         @Override
         public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -161,11 +177,44 @@ public class NewQuedadaActivity extends AppCompatActivity {
     //fin recycler view iconos
 
     public void onClickCrear(View view) {
-        String titulo_edit = tituloedit.getText().toString();
-        String ubicacion_edit = ubicacionedit.getText().toString();
-        String fecha_edit = fechaedit.getText().toString();
-        String hora_edit = horaedit.getText().toString();
-        String descripcion_edit = descripcionedit.getText().toString();
+        //cogemos los campos introducidos por el usuario
+        titulo_edit = tituloedit.getText().toString();
+        ubicacion_edit = ubicacionedit.getText().toString();
+        fecha_edit = fechaedit.getText().toString();
+        hora_edit = horaedit.getText().toString();
+        descripcion_edit = descripcionedit.getText().toString();
+
+        //comprobamos si el usuario ha escrito en todos los campos
+        ComprobarDatosVacios();
+
+        //si hay campos vacios creamos un dialogo para que pueda revisar
+        if(textovacio) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("No has rellenado todos los campos, deseas crear el evento igualmente?")
+                    .setTitle("Campos incompletos!")
+                    .setIcon(R.drawable.cross)
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            EnviarDatos();
+                        }})
+                    .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Toast.makeText(NewQuedadaActivity.this, "Evento no creado", Toast.LENGTH_SHORT).show();
+                    }
+                    });
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        }
+        //si no los hay enviamos los datos de vuelta
+        else{
+            EnviarDatos();
+        }
+
+
+    }
+    public void EnviarDatos(){
         Intent data = new Intent();
         data.putExtra("titulo",titulo_edit);
         data.putExtra("ubicacion",ubicacion_edit);
@@ -175,6 +224,14 @@ public class NewQuedadaActivity extends AppCompatActivity {
         data.putExtra("tipoevento",tipoevento);
         setResult(RESULT_OK,data);
         finish();
+    }
+    public void ComprobarDatosVacios(){
+        if(titulo_edit.equals("")){ textovacio = true; }
+        if(ubicacion_edit.equals("")){ textovacio = true; }
+        if(fecha_edit.equals("")){ textovacio = true; }
+        if(hora_edit.equals("")){ textovacio = true; }
+        if(descripcion_edit.equals("")){ textovacio = true; }
+        if(tipoevento==-1){ textovacio = true; }
     }
 
 
