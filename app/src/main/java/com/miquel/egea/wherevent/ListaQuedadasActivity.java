@@ -60,14 +60,6 @@ public class ListaQuedadasActivity extends AppCompatActivity {
                 }
         });
         quedadas = new ArrayList<>();
-        //conexion firebase
-        /*db.collection("Quedadas").document("quedadas").addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
-            @Override
-            public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
-                //noasistenview.setText(documentSnapshot.getDouble("NoAsisten"));
-            }
-        });*/
-        //recorrer documentos creados en Firebase --> actualizar quedadas existentes (filtrar con el identificador = Id del documento) y crear(?) o eliminar las que no salgan o si en local
 
         //layout y adaptador RecyclerView
         item_list = findViewById(R.id.item_list);
@@ -86,7 +78,14 @@ public class ListaQuedadasActivity extends AppCompatActivity {
             public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
                 quedadas.clear();
                 for (DocumentSnapshot doc : documentSnapshots) {
-                    quedadas.add(new Quedada(doc.getString("Titulo"), "xxxx", "xxx", "000000", "0000", "autor", 0, 0));
+                    quedadas.add(new Quedada(doc.getString("titulo"),
+                            doc.getString("descripcion"),
+                            doc.getString("ubicacion"),
+                            doc.getString("fecha"),
+                            doc.getString("hora"),
+                            doc.getString("autor"),
+                            doc.getString("identificador"),
+                            0));
                 }
                 adapter.notifyDataSetChanged();
             }
@@ -127,7 +126,7 @@ public class ListaQuedadasActivity extends AppCompatActivity {
                         data.getStringExtra("fecha"),
                         data.getStringExtra("hora"),
                         "yomismo",
-                        3,
+                        data.getStringExtra("identificador"),
                         data.getIntExtra("tipoevento",-1)
                 );
                 db.collection("Quedadas").add(nueva).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
@@ -136,7 +135,6 @@ public class ListaQuedadasActivity extends AppCompatActivity {
                         Log.i("Wherevent", "He grabado la nueva quedada");
                     }
                 });
-                //adapter.notifyItemInserted(quedadas.size()-1);
             }
         }
         super.onActivityResult(requestCode, resultCode, data);

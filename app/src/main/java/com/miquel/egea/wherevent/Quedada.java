@@ -3,11 +3,11 @@ package com.miquel.egea.wherevent;
 import java.util.List;
 
 public class Quedada {
-    private String titulo, descripción, ubicacion, fecha, hora,autor;
-    private Integer identificador, tipo_evento;
+    private String titulo, descripción, ubicacion, fecha, hora,autor,identificador;
+    private Integer tipo_evento;
     private List<Confirmacion> confirmaciones;
 
-    public Quedada(String titulo, String descripción, String ubicacion, String fecha, String hora, String autor, Integer identificador, Integer tipo_evento) {
+    public Quedada(String titulo, String descripción, String ubicacion, String fecha, String hora, String autor, String identificador, Integer tipo_evento) {
         this.titulo = titulo;
         this.descripción = descripción;
         this.ubicacion = ubicacion;
@@ -66,11 +66,11 @@ public class Quedada {
         this.hora = hora;
     }
 
-    public Integer getIdentificador() {
+    public String getIdentificador() {
         return identificador;
     }
 
-    public void setIdentificador(Integer identificador) {
+    public void setIdentificador(String identificador) {
         this.identificador = identificador;
     }
 
