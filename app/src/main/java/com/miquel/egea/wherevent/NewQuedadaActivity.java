@@ -68,10 +68,10 @@ public class NewQuedadaActivity extends AppCompatActivity {
 
                 DatePickerDialog dialog = new DatePickerDialog(
                         NewQuedadaActivity.this,
-                        android.R.style.Theme_Holo_Dialog_MinWidth,
+                        android.R.style.Theme_DeviceDefault_Dialog_Alert,
                         fechaeditListener,
                         year, month, day);
-                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                //dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 dialog.show();
             }
         });
@@ -94,10 +94,10 @@ public class NewQuedadaActivity extends AppCompatActivity {
 
                 TimePickerDialog dialog = new TimePickerDialog(
                         NewQuedadaActivity.this,
-                        android.R.style.Theme_Holo_Dialog_MinWidth,
+                        android.R.style.Theme_DeviceDefault_Dialog_Alert,
                         horaeditListener,
                         hora, minutos, true);
-                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                //dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 dialog.show();
             }
         });
