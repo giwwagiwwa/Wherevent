@@ -220,7 +220,7 @@ public class NewQuedadaActivity extends AppCompatActivity {
         data.putExtra("ubicacion",ubicacion_edit);
         data.putExtra("fecha",fecha_edit);
         data.putExtra("hora",hora_edit);
-        data.putExtra("descripcion",descripcion_edit);
+        data.putExtra("descripción",descripcion_edit);
         data.putExtra("tipoevento",tipoevento);
         setResult(RESULT_OK,data);
         finish();

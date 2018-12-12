@@ -36,7 +36,7 @@ public class ConsultaQuedadaActivity extends AppCompatActivity {
             tituloview.setText(titulo);
             String ubicacion = data.getStringExtra("ubicacion");
             ubicacionview.setText(ubicacion);
-            String descripcion = data.getStringExtra("descripcion");
+            String descripcion = data.getStringExtra("descripción");
             descripcionview.setText(descripcion);
             String hora = data.getStringExtra("hora");
             horaview.setText(hora);

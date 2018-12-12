@@ -79,7 +79,7 @@ public class ListaQuedadasActivity extends AppCompatActivity {
                 quedadas.clear();
                 for (DocumentSnapshot doc : documentSnapshots) {
                     quedadas.add(new Quedada(doc.getString("titulo"),
-                            doc.getString("descripcion"),
+                            doc.getString("descripción"),
                             doc.getString("ubicacion"),
                             doc.getString("fecha"),
                             doc.getString("hora"),
@@ -121,7 +121,7 @@ public class ListaQuedadasActivity extends AppCompatActivity {
         if(requestCode==NUEVA_QUEDADA){
             if (resultCode == RESULT_OK){
                 Quedada nueva = new Quedada(data.getStringExtra("titulo"),
-                        data.getStringExtra("descripcion"),
+                        data.getStringExtra("descripción"),
                         data.getStringExtra("ubicacion"),
                         data.getStringExtra("fecha"),
                         data.getStringExtra("hora"),
@@ -181,7 +181,7 @@ public class ListaQuedadasActivity extends AppCompatActivity {
         intent.putExtra("hora",quedadas.get(evento_position).getHora());
         intent.putExtra("fecha",quedadas.get(evento_position).getFecha());
         intent.putExtra("tipoevento",quedadas.get(evento_position).getTipo_evento());
-        intent.putExtra("descripcion",quedadas.get(evento_position).getDescripción());
+        intent.putExtra("descripción",quedadas.get(evento_position).getDescripción());
         startActivity(intent);
     }
 
