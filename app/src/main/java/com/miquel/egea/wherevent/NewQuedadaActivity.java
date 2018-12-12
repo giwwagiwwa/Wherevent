@@ -233,6 +233,4 @@ public class NewQuedadaActivity extends AppCompatActivity {
         if(descripcion_edit.equals("")){ textovacio = true; }
         if(tipoevento==-1){ textovacio = true; }
     }
-
-
 }

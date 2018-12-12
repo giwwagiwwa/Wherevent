@@ -1,9 +1,11 @@
 package com.miquel.egea.wherevent;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -171,6 +173,15 @@ public class ListaQuedadasActivity extends AppCompatActivity {
                     onClickEvento(getAdapterPosition());
                 }
             });
+
+            //añadimos un listener de long click a los elementos quedadas
+            itemView.setOnLongClickListener(new View.OnLongClickListener(){
+                @Override
+                public boolean onLongClick(View view) {
+                    onLongClickItem(getAdapterPosition());
+                    return false;
+                }
+            });
         }
     }
 
@@ -183,6 +194,25 @@ public class ListaQuedadasActivity extends AppCompatActivity {
         intent.putExtra("tipoevento",quedadas.get(evento_position).getTipo_evento());
         intent.putExtra("descripción",quedadas.get(evento_position).getDescripción());
         startActivity(intent);
+    }
+
+    public void onLongClickItem(final int position){
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("¿Seguro que quieres borrar '"+ quedadas.get(position).getTitulo()+"'?");
+        builder.setPositiveButton("Borrar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                removeitem(position);
+            }
+        });
+        builder.setNegativeButton(android.R.string.cancel, null);
+         builder.create().show();
+    }
+
+    private void removeitem(int position) {
+        quedadas.remove(position);
+        adapter.notifyItemRemoved(position);
     }
 
 
