@@ -31,8 +31,12 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class ListaQuedadasActivity extends AppCompatActivity {
 
@@ -44,6 +48,9 @@ public class ListaQuedadasActivity extends AppCompatActivity {
     private static int iconos[] = { R.drawable.bbq, R.drawable.bolos, R.drawable.camping, R.drawable.cena, R.drawable.cine, R.drawable.copa,
             R.drawable.estudio, R.drawable.globos, R.drawable.gym, R.drawable.pastel, R.drawable.playa, R.drawable.regalo,
             R.drawable.viaje};
+    private Date fechaconhorad;
+    private SimpleDateFormat asdf;
+    private String fechaconhora;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,9 +80,7 @@ public class ListaQuedadasActivity extends AppCompatActivity {
 
     @Override
     protected void onStart() {
-        super.onStart();
-
-        db.collection("Quedadas").orderBy("fecha").addSnapshotListener(this, new EventListener<QuerySnapshot>() {
+        db.collection("Quedadas").orderBy("fechaconhora",Query.Direction.DESCENDING).addSnapshotListener(ListaQuedadasActivity.this, new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
                 quedadas.clear();
@@ -87,7 +92,7 @@ public class ListaQuedadasActivity extends AppCompatActivity {
                 adapter.notifyDataSetChanged();
             }
         });
-
+        super.onStart();
     }
 
     @Override
@@ -117,13 +122,22 @@ public class ListaQuedadasActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode==NUEVA_QUEDADA){
             if (resultCode == RESULT_OK){
-                Quedada nueva = new Quedada(data.getStringExtra("titulo"),
+                //convertimos el string en Date para guardarlo en Firebase
+                fechaconhora = data.getStringExtra("fechaconhora");
+                asdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss", Locale.ENGLISH);
+                try {
+                    fechaconhorad = asdf.parse(fechaconhora);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                Quedada nueva = new Quedada(null,
+                        data.getStringExtra("titulo"),
                         data.getStringExtra("descripción"),
                         data.getStringExtra("ubicacion"),
-                        data.getStringExtra("fecha"),
-                        data.getStringExtra("hora"),
                         "yomismo",
-                        data.getLongExtra("tipoevento",-1)
+                        data.getLongExtra("tipoevento",-1),
+                         fechaconhorad,
+                        null
                 );
                 db.collection("Quedadas").add(nueva).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
@@ -183,8 +197,7 @@ public class ListaQuedadasActivity extends AppCompatActivity {
         Intent intent = new Intent(this, ConsultaQuedadaActivity.class);
         intent.putExtra("titulo",quedadas.get(evento_position).getTitulo());
         intent.putExtra("ubicacion",quedadas.get(evento_position).getUbicacion());
-        intent.putExtra("hora",quedadas.get(evento_position).getHora());
-        intent.putExtra("fecha",quedadas.get(evento_position).getFecha());
+        intent.putExtra("fechaconhora",quedadas.get(evento_position).getFechaconhora());
         intent.putExtra("tipoevento",quedadas.get(evento_position).getTipo_evento());
         intent.putExtra("descripción",quedadas.get(evento_position).getDescripción());
         startActivity(intent);
@@ -224,10 +237,19 @@ public class ListaQuedadasActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
             Quedada model_item = quedadas.get(position);
+            //convertimos la hora de Date a String
+            Date fechaconhorad = model_item.getFechaconhora();
+            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+            String fechaconhora = sdf.format(fechaconhorad);
+            //separamos fecha y hora
+            String[] fechayhora = fechaconhora.split(" ");
+            String fecha = fechayhora[0];
+            String hora = fechayhora[1];
+
             holder.titleview.setText(model_item.getTitulo());
             holder.autorview.setText(model_item.getAutor());
-            holder.fechaview.setText(model_item.getFecha());
-            holder.horaview.setText(model_item.getHora());
+            holder.fechaview.setText(fecha);
+            holder.horaview.setText(hora);
             holder.ubicacionview.setText(model_item.getUbicacion());
             holder.iconoview.setImageResource(iconos[(int)(long)model_item.getTipo_evento()]);
             holder.iconoview.setBackgroundColor(getResources().getColor(R.color.alta));

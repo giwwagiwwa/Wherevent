@@ -43,9 +43,10 @@ public class NewQuedadaActivity extends AppCompatActivity {
     private boolean textovacio;
     private String titulo_edit;
     private String ubicacion_edit;
-    private String fecha_edit;
-    private String hora_edit;
     private String descripcion_edit;
+    private String dated;
+    private String timed;
+    private String fechaconhora;
 
 
     @Override
@@ -81,6 +82,7 @@ public class NewQuedadaActivity extends AppCompatActivity {
             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
                 month = month + 1;
                 String date = day + "/" + month + "/" + year;
+                dated = month + "/" + day + "/" + year;
                 fechaedit.setText(date);
             }
         };
@@ -106,6 +108,7 @@ public class NewQuedadaActivity extends AppCompatActivity {
             @Override
             public void onTimeSet(TimePicker datePicker, int hora, int minutos) {
                 String time = hora + ":" + minutos + " h.";
+                timed = hora + ":" + minutos + ":" + "00";
                 horaedit.setText(time);
             }
         };
@@ -116,14 +119,14 @@ public class NewQuedadaActivity extends AppCompatActivity {
                 = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         mylist.setLayoutManager(layoutManager);
         mylist.setAdapter(new MyAdapter());
+
     }
+
 
     @Override
     protected void onStart() {
         textovacio=false;
         titulo_edit="";
-        fecha_edit="";
-        hora_edit="";
         descripcion_edit="";
         ubicacion_edit="";
         tipoevento = -1L;
@@ -180,9 +183,8 @@ public class NewQuedadaActivity extends AppCompatActivity {
         //cogemos los campos introducidos por el usuario
         titulo_edit = tituloedit.getText().toString();
         ubicacion_edit = ubicacionedit.getText().toString();
-        fecha_edit = fechaedit.getText().toString();
-        hora_edit = horaedit.getText().toString();
         descripcion_edit = descripcionedit.getText().toString();
+        fechaconhora = dated +" "+ timed;
 
         //comprobamos si el usuario ha escrito en todos los campos
         ComprobarDatosVacios();
@@ -218,8 +220,7 @@ public class NewQuedadaActivity extends AppCompatActivity {
         Intent data = new Intent();
         data.putExtra("titulo",titulo_edit);
         data.putExtra("ubicacion",ubicacion_edit);
-        data.putExtra("fecha",fecha_edit);
-        data.putExtra("hora",hora_edit);
+        data.putExtra("fechaconhora",fechaconhora);
         data.putExtra("descripción",descripcion_edit);
         data.putExtra("tipoevento",tipoevento);
         setResult(RESULT_OK,data);
@@ -228,8 +229,8 @@ public class NewQuedadaActivity extends AppCompatActivity {
     public void ComprobarDatosVacios(){
         if(titulo_edit.equals("")){ textovacio = true; }
         if(ubicacion_edit.equals("")){ textovacio = true; }
-        if(fecha_edit.equals("")){ textovacio = true; }
-        if(hora_edit.equals("")){ textovacio = true; }
+        if(fechaedit.toString().equals("")){ textovacio = true; }
+        if(horaedit.toString().equals("")){ textovacio = true; }
         if(descripcion_edit.equals("")){ textovacio = true; }
         if(tipoevento==-1){ textovacio = true; }
     }

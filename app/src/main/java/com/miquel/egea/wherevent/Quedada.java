@@ -5,29 +5,33 @@ import java.util.List;
 
 public class Quedada {
     private String identificador;
-    private String titulo, descripción, ubicacion, fecha, hora, autor;
-    private Date fecha2;
+    private String titulo, descripción, ubicacion, autor;
     private Long tipo_evento;
+    private Date fechaconhora;
+
     private List<Confirmacion> confirmaciones;
 
-    public Quedada() {}
+    public Quedada() {
+    }
 
-    public Quedada(String titulo, String descripción, String ubicacion, String fecha, String hora, String autor, Long tipo_evento) {
+    public Quedada(String identificador, String titulo, String descripción, String ubicacion, String autor, Long tipo_evento, Date fechaconhora, List<Confirmacion> confirmaciones) {
+        this.identificador = identificador;
         this.titulo = titulo;
         this.descripción = descripción;
         this.ubicacion = ubicacion;
-        this.fecha = fecha;
-        this.hora = hora;
         this.autor = autor;
+
         this.tipo_evento = tipo_evento;
+        this.fechaconhora = fechaconhora;
+        this.confirmaciones = confirmaciones;
     }
 
-    public String getAutor() {
-        return autor;
+    public String getIdentificador() {
+        return identificador;
     }
 
-    public void setAutor(String autor) {
-        this.autor = autor;
+    public void setIdentificador(String identificador) {
+        this.identificador = identificador;
     }
 
     public String getTitulo() {
@@ -54,28 +58,12 @@ public class Quedada {
         this.ubicacion = ubicacion;
     }
 
-    public String getFecha() {
-        return fecha;
+    public String getAutor() {
+        return autor;
     }
 
-    public void setFecha(String fecha) {
-        this.fecha = fecha;
-    }
-
-    public String getHora() {
-        return hora;
-    }
-
-    public void setHora(String hora) {
-        this.hora = hora;
-    }
-
-    public String getIdentificador() {
-        return identificador;
-    }
-
-    public void setIdentificador(String identificador) {
-        this.identificador = identificador;
+    public void setAutor(String autor) {
+        this.autor = autor;
     }
 
     public Long getTipo_evento() {
@@ -86,6 +74,14 @@ public class Quedada {
         this.tipo_evento = tipo_evento;
     }
 
+    public Date getFechaconhora() {
+        return fechaconhora;
+    }
+
+    public void setFechaconhora(Date fechaconhora) {
+        this.fechaconhora = fechaconhora;
+    }
+
     public List<Confirmacion> getConfirmaciones() {
         return confirmaciones;
     }
@@ -94,3 +90,7 @@ public class Quedada {
         this.confirmaciones = confirmaciones;
     }
 }
+
+
+
+
