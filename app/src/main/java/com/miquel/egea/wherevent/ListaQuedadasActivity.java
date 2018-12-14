@@ -195,9 +195,18 @@ public class ListaQuedadasActivity extends AppCompatActivity {
 
     private void onClickEvento(int evento_position) {
         Intent intent = new Intent(this, ConsultaQuedadaActivity.class);
+        Date fechaconhorad = quedadas.get(evento_position).getFechaconhora();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+        String fechaconhora = sdf.format(fechaconhorad);
+        //separamos fecha y hora
+        String[] fechayhora = fechaconhora.split(" ");
+        String fecha = fechayhora[0];
+        String hora = fechayhora[1];
+
         intent.putExtra("titulo",quedadas.get(evento_position).getTitulo());
         intent.putExtra("ubicacion",quedadas.get(evento_position).getUbicacion());
-        intent.putExtra("fechaconhora",quedadas.get(evento_position).getFechaconhora());
+        intent.putExtra("fecha",fecha);
+        intent.putExtra("hora",hora);
         intent.putExtra("tipoevento",quedadas.get(evento_position).getTipo_evento());
         intent.putExtra("descripción",quedadas.get(evento_position).getDescripción());
         startActivity(intent);
