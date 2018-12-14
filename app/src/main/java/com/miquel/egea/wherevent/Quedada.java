@@ -1,20 +1,24 @@
 package com.miquel.egea.wherevent;
 
+import java.util.Date;
 import java.util.List;
 
 public class Quedada {
-    private String titulo, descripción, ubicacion, fecha, hora,autor,identificador;
-    private Integer tipo_evento;
+    private String identificador;
+    private String titulo, descripción, ubicacion, fecha, hora, autor;
+    private Date fecha2;
+    private Long tipo_evento;
     private List<Confirmacion> confirmaciones;
 
-    public Quedada(String titulo, String descripción, String ubicacion, String fecha, String hora, String autor, String identificador, Integer tipo_evento) {
+    public Quedada() {}
+
+    public Quedada(String titulo, String descripción, String ubicacion, String fecha, String hora, String autor, Long tipo_evento) {
         this.titulo = titulo;
         this.descripción = descripción;
         this.ubicacion = ubicacion;
         this.fecha = fecha;
         this.hora = hora;
         this.autor = autor;
-        this.identificador = identificador;
         this.tipo_evento = tipo_evento;
     }
 
@@ -74,11 +78,11 @@ public class Quedada {
         this.identificador = identificador;
     }
 
-    public Integer getTipo_evento() {
+    public Long getTipo_evento() {
         return tipo_evento;
     }
 
-    public void setTipo_evento(Integer tipo_evento) {
+    public void setTipo_evento(Long tipo_evento) {
         this.tipo_evento = tipo_evento;
     }
 

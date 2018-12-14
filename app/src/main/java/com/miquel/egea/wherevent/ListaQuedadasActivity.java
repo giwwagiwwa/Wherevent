@@ -75,19 +75,14 @@ public class ListaQuedadasActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        db.collection("Quedadas").addSnapshotListener(this, new EventListener<QuerySnapshot>() {
+        db.collection("Quedadas").orderBy("fecha").addSnapshotListener(this, new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
                 quedadas.clear();
                 for (DocumentSnapshot doc : documentSnapshots) {
-                    quedadas.add(new Quedada(doc.getString("titulo"),
-                            doc.getString("descripción"),
-                            doc.getString("ubicacion"),
-                            doc.getString("fecha"),
-                            doc.getString("hora"),
-                            doc.getString("autor"),
-                            doc.getString("identificador"),
-                            0));
+                    Quedada q = doc.toObject(Quedada.class);
+                    q.setIdentificador(doc.getId());
+                    quedadas.add(q);
                 }
                 adapter.notifyDataSetChanged();
             }
@@ -128,8 +123,7 @@ public class ListaQuedadasActivity extends AppCompatActivity {
                         data.getStringExtra("fecha"),
                         data.getStringExtra("hora"),
                         "yomismo",
-                        data.getStringExtra("identificador"),
-                        data.getIntExtra("tipoevento",-1)
+                        data.getLongExtra("tipoevento",-1)
                 );
                 db.collection("Quedadas").add(nueva).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
@@ -211,7 +205,8 @@ public class ListaQuedadasActivity extends AppCompatActivity {
     }
 
     private void removeitem(int position) {
-        quedadas.remove(position);
+        //pasarle el identificador del evento en la funcion
+         db.collection("Quedadas").document(quedadas.get(position).getIdentificador()).delete();
         adapter.notifyItemRemoved(position);
     }
 
@@ -234,7 +229,7 @@ public class ListaQuedadasActivity extends AppCompatActivity {
             holder.fechaview.setText(model_item.getFecha());
             holder.horaview.setText(model_item.getHora());
             holder.ubicacionview.setText(model_item.getUbicacion());
-            holder.iconoview.setImageResource(iconos[model_item.getTipo_evento()]);
+            holder.iconoview.setImageResource(iconos[(int)(long)model_item.getTipo_evento()]);
             holder.iconoview.setBackgroundColor(getResources().getColor(R.color.alta));
         }
         @Override

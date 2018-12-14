@@ -34,7 +34,7 @@ public class NewQuedadaActivity extends AppCompatActivity {
     TextView fechaedit;
     TextView horaedit;
     EditText descripcionedit;
-    Integer tipoevento;
+    Long tipoevento;
     private DatePickerDialog.OnDateSetListener fechaeditListener;
     private TimePickerDialog.OnTimeSetListener horaeditListener;
     private static int iconos[] = { R.drawable.bbq, R.drawable.bolos, R.drawable.camping, R.drawable.cena, R.drawable.cine, R.drawable.copa,
@@ -126,7 +126,7 @@ public class NewQuedadaActivity extends AppCompatActivity {
         hora_edit="";
         descripcion_edit="";
         ubicacion_edit="";
-        tipoevento=-1;
+        tipoevento = -1L;
 
         super.onStart();
     }
@@ -148,7 +148,7 @@ public class NewQuedadaActivity extends AppCompatActivity {
         }
     }
 
-    private void onClickIconSelect(int position) {
+    private void onClickIconSelect(long position) {
         Toast.makeText(this, "Icono seleccionado", Toast.LENGTH_SHORT).show();
         tipoevento=position;
         //nos quedamos con la posicion del icono en la lista

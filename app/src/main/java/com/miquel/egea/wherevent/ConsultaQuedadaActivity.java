@@ -42,8 +42,8 @@ public class ConsultaQuedadaActivity extends AppCompatActivity {
             horaview.setText(hora);
             String fecha = data.getStringExtra("fecha");
             fechaview.setText(fecha);
-            Integer tipoevento = data.getIntExtra("tipoevento",-1);
-            iconoview.setImageResource(iconos[tipoevento]);
+            Long tipoevento = data.getLongExtra("tipoevento",-1);
+            iconoview.setImageResource(iconos[(int)(long)tipoevento]);
         }
 
     }

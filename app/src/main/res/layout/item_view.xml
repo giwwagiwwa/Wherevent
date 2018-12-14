@@ -6,7 +6,8 @@
     android:layout_height="125dp"
     android:visibility="visible"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".ListaQuedadasActivity">
+    tools:context=".ListaQuedadasActivity"
+    >
 
     <TextView
         android:id="@+id/nocontestanview"
