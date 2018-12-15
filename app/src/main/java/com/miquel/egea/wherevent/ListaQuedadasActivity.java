@@ -135,7 +135,7 @@ public class ListaQuedadasActivity extends AppCompatActivity {
                         data.getStringExtra("descripción"),
                         data.getStringExtra("ubicacion"),
                         "yomismo",
-                        data.getLongExtra("tipoevento",-1),
+                        data.getLongExtra("tipoevento",0),
                          fechaconhorad,
                         null
                 );

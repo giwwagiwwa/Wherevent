@@ -5,15 +5,11 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.nfc.Tag;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
@@ -22,8 +18,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
-
-import org.w3c.dom.Text;
 
 import java.util.Calendar;
 
@@ -40,7 +34,8 @@ public class NewQuedadaActivity extends AppCompatActivity {
     private static int iconos[] = { R.drawable.bbq, R.drawable.bolos, R.drawable.camping, R.drawable.cena, R.drawable.cine, R.drawable.copa,
             R.drawable.estudio,R.drawable.globos, R.drawable.gym, R.drawable.pastel, R.drawable.playa, R.drawable.regalo,
             R.drawable.viaje};
-    private boolean textovacio;
+    private boolean TextoVacioObligatorio;
+    private boolean TextoVacioOpcional;
     private String titulo_edit;
     private String ubicacion_edit;
     private String descripcion_edit;
@@ -125,11 +120,12 @@ public class NewQuedadaActivity extends AppCompatActivity {
 
     @Override
     protected void onStart() {
-        textovacio=false;
+        TextoVacioObligatorio =false;
+        TextoVacioOpcional= false;
         titulo_edit="";
         descripcion_edit="";
         ubicacion_edit="";
-        tipoevento = -1L;
+        tipoevento = 0L;
 
         super.onStart();
     }
@@ -189,7 +185,7 @@ public class NewQuedadaActivity extends AppCompatActivity {
         ComprobarDatosVacios();
 
         //si hay campos vacios creamos un dialogo para que pueda revisar
-        if(textovacio) {
+        if(TextoVacioOpcional) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage("No has rellenado todos los campos, deseas crear el evento igualmente?")
                     .setTitle("Campos incompletos!")
@@ -197,7 +193,7 @@ public class NewQuedadaActivity extends AppCompatActivity {
                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            EnviarDatos();
+                            ComprobarDatosObligatorios();
                         }})
                     .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
                         @Override
@@ -210,11 +206,29 @@ public class NewQuedadaActivity extends AppCompatActivity {
         }
         //si no los hay enviamos los datos de vuelta
         else{
-            EnviarDatos();
+            ComprobarDatosObligatorios();
         }
 
 
     }
+
+    private void ComprobarDatosObligatorios() {
+        if(TextoVacioObligatorio){
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("No has rellenado los campos obligatorios: \n Título, Ubicación, Fecha y hora")
+                    .setTitle("Campos obligatorios incompletos!")
+                    .setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    });
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        }
+        else EnviarDatos();
+    }
+
     public void EnviarDatos(){
         Intent data = new Intent();
         data.putExtra("titulo",titulo_edit);
@@ -226,11 +240,11 @@ public class NewQuedadaActivity extends AppCompatActivity {
         finish();
     }
     public void ComprobarDatosVacios(){
-        if(titulo_edit.equals("")){ textovacio = true; }
-        if(ubicacion_edit.equals("")){ textovacio = true; }
-        if(fechaedit.toString().equals("")){ textovacio = true; }
-        if(horaedit.toString().equals("")){ textovacio = true; }
-        if(descripcion_edit.equals("")){ textovacio = true; }
-        if(tipoevento==-1){ textovacio = true; }
+        if(titulo_edit.equals("")){ TextoVacioObligatorio = true; }
+        if(ubicacion_edit.equals("")){ TextoVacioObligatorio = true; }
+        if(fechaedit.toString().equals("")){ TextoVacioObligatorio = true; }
+        if(horaedit.toString().equals("")){ TextoVacioObligatorio = true; }
+        if(descripcion_edit.equals("")){ TextoVacioOpcional = true; }
+        if(tipoevento==0L){ TextoVacioOpcional = true; }
     }
 }
