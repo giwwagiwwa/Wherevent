@@ -8,9 +8,10 @@
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/rootRL"
-        android:layout_width="fill_parent"
+        android:layout_width="382dp"
         android:layout_height="fill_parent"
         android:background="@drawable/ic_wallpaper"
+        android:backgroundTint="@color/colorPrimaryDark"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -22,27 +23,27 @@
     <ImageView
         android:id="@+id/BoxView"
         android:layout_width="320dp"
-        android:layout_height="146dp"
+        android:layout_height="124dp"
         android:layout_alignParentTop="true"
         android:layout_marginEnd="24dp"
         android:layout_marginLeft="24dp"
         android:layout_marginRight="24dp"
         android:layout_marginStart="24dp"
         android:layout_marginTop="32dp"
-        android:background="@color/colorAccent"
+        android:background="@color/colorPrimaryDark"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/rootRL" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/loginview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:text="Login"
         android:textColor="@android:color/background_light"
         android:textSize="18sp"
@@ -50,6 +51,36 @@
         app:layout_constraintEnd_toEndOf="@+id/BoxView"
         app:layout_constraintStart_toStartOf="@+id/BoxView"
         app:layout_constraintTop_toTopOf="@+id/BoxView" />
+
+    <EditText
+        android:id="@+id/usernameedit"
+        android:layout_width="191dp"
+        android:layout_height="40dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:ems="10"
+        android:gravity="center_horizontal|center"
+        android:hint="username"
+        android:inputType="textPersonName"
+        android:textColor="@android:color/white"
+        app:layout_constraintBottom_toBottomOf="@+id/BoxView"
+        app:layout_constraintStart_toStartOf="@+id/BoxView"
+        app:layout_constraintTop_toBottomOf="@+id/loginview" />
+
+    <Button
+        android:id="@+id/btn_login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:text="Aceptar"
+        app:layout_constraintBaseline_toBaselineOf="@+id/usernameedit"
+        app:layout_constraintEnd_toEndOf="@+id/BoxView"
+        app:layout_constraintStart_toEndOf="@+id/usernameedit" />
 
 
 </android.support.constraint.ConstraintLayout>
