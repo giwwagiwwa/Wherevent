@@ -142,6 +142,9 @@ public class NewQuedadaActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     onClickIconSelect(getAdapterPosition());
+
+                    if (getAdapterPosition() == getLayoutPosition()){
+                        image_view.setColorFilter(getResources().getColor(R.color.colorPrimary));}
                 }
             });
         }

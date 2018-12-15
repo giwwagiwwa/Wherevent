@@ -34,6 +34,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -161,6 +162,7 @@ public class ListaQuedadasActivity extends AppCompatActivity {
         TextView asistenview;
         TextView ubicacionview;
         ImageView iconoview;
+        ImageView eventopasadoview;
 
 
         public MyViewHolder(View itemView) {
@@ -173,6 +175,7 @@ public class ListaQuedadasActivity extends AppCompatActivity {
             this.asistenview = itemView.findViewById(R.id.asistenview);
             this.ubicacionview = itemView.findViewById(R.id.ubicacionview);
             this.iconoview = itemView.findViewById(R.id.iconoview);
+            this.eventopasadoview = itemView.findViewById(R.id.eventopasadoview);
 
             //añadimos un listener a los elementos quedadas
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -196,7 +199,7 @@ public class ListaQuedadasActivity extends AppCompatActivity {
     private void onClickEvento(int evento_position) {
         Intent intent = new Intent(this, ConsultaQuedadaActivity.class);
         Date fechaconhorad = quedadas.get(evento_position).getFechaconhora();
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         String fechaconhora = sdf.format(fechaconhorad);
         //separamos fecha y hora
         String[] fechayhora = fechaconhora.split(" ");
@@ -248,12 +251,17 @@ public class ListaQuedadasActivity extends AppCompatActivity {
             Quedada model_item = quedadas.get(position);
             //convertimos la hora de Date a String
             Date fechaconhorad = model_item.getFechaconhora();
-            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
             String fechaconhora = sdf.format(fechaconhorad);
             //separamos fecha y hora
             String[] fechayhora = fechaconhora.split(" ");
             String fecha = fechayhora[0];
             String hora = fechayhora[1];
+
+            if (fechaconhorad.before(Calendar.getInstance().getTime())){
+                holder.eventopasadoview.setVisibility(View.VISIBLE);
+            }
+            else {holder.eventopasadoview.setVisibility(View.INVISIBLE);}
 
             holder.titleview.setText(model_item.getTitulo());
             holder.autorview.setText(model_item.getAutor());
