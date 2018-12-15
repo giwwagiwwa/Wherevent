@@ -269,7 +269,10 @@ public class ListaQuedadasActivity extends AppCompatActivity {
             holder.fechaview.setText(fecha);
             holder.horaview.setText(hora);
             holder.ubicacionview.setText(model_item.getUbicacion());
-            holder.iconoview.setImageResource(iconos[(int)(long)model_item.getTipo_evento()]);
+            if(model_item.getTipo_evento()==0){
+                holder.iconoview.setImageResource(R.drawable.wherevent);
+            }
+            else holder.iconoview.setImageResource(iconos[(int)(long)model_item.getTipo_evento()]);
             holder.iconoview.setBackgroundColor(getResources().getColor(R.color.alta));
         }
         @Override
