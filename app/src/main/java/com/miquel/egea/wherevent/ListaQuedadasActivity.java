@@ -49,6 +49,7 @@ public class ListaQuedadasActivity extends AppCompatActivity {
     private static int iconos[] = { R.drawable.bbq, R.drawable.bolos, R.drawable.camping, R.drawable.cena, R.drawable.cine, R.drawable.copa,
             R.drawable.estudio, R.drawable.globos, R.drawable.gym, R.drawable.pastel, R.drawable.playa, R.drawable.regalo,
             R.drawable.viaje};
+    private static int iconowherevent = R.drawable.wherevent;
     private Date fechaconhorad;
     private SimpleDateFormat asdf;
     private String fechaconhora;
