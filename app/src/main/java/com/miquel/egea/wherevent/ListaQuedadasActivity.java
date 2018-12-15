@@ -46,6 +46,7 @@ public class ListaQuedadasActivity extends AppCompatActivity {
     private RecyclerView item_list;
     public Adapter adapter;
     List<Quedada> quedadas;
+    List<Usuario> usuarios;
     private static int iconos[] = { R.drawable.bbq, R.drawable.bolos, R.drawable.camping, R.drawable.cena, R.drawable.cine, R.drawable.copa,
             R.drawable.estudio, R.drawable.globos, R.drawable.gym, R.drawable.pastel, R.drawable.playa, R.drawable.regalo,
             R.drawable.viaje};
@@ -70,6 +71,29 @@ public class ListaQuedadasActivity extends AppCompatActivity {
                 startActivityForResult(intent, NUEVA_QUEDADA);
                 }
         });
+        //creamos base local de usuario
+        usuarios = new ArrayList<>(1); //limitamos la lista de users a 1
+        usuarios.add(new Usuario("pepepelotas",null));
+
+        //check usuario
+        db.collection("Usuarios").addSnapshotListener(ListaQuedadasActivity.this, new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
+                for (DocumentSnapshot doc : documentSnapshots) {
+                    //compara si el usuario local está registrado en Firebase
+                    if(usuarios.get(0).getUsername().equals(doc.getString("nombre"))){
+                        Toast.makeText(ListaQuedadasActivity.this, "Bienvenido de nuevo "+usuarios.get(0).getUsername(), Toast.LENGTH_SHORT).show();
+                    }
+                    else{
+                        Intent intent = new Intent(ListaQuedadasActivity.this, LoginActivity.class);
+                        startActivity(intent);
+                    }
+                }
+            }
+        });
+
+
+
         quedadas = new ArrayList<>();
 
         //layout y adaptador RecyclerView
