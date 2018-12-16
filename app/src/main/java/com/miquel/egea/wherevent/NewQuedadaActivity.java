@@ -54,6 +54,12 @@ public class NewQuedadaActivity extends AppCompatActivity {
         fechaedit = this.findViewById(R.id.fechaedit);
         horaedit = this.findViewById(R.id.horaedit);
         descripcionedit = this.findViewById(R.id.descripcionedit);
+        TextoVacioObligatorio =false;
+        TextoVacioOpcional= false;
+        titulo_edit="";
+        descripcion_edit="";
+        ubicacion_edit="";
+        tipoevento = 0L;
 
         fechaedit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,12 +127,7 @@ public class NewQuedadaActivity extends AppCompatActivity {
 
     @Override
     protected void onStart() {
-        TextoVacioObligatorio =false;
-        TextoVacioOpcional= false;
-        titulo_edit="";
-        descripcion_edit="";
-        ubicacion_edit="";
-        tipoevento = 0L;
+
 
         super.onStart();
     }

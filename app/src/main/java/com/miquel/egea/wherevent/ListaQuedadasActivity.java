@@ -42,6 +42,7 @@ import java.util.Locale;
 public class ListaQuedadasActivity extends AppCompatActivity {
 
     private static final int NUEVA_QUEDADA = 0;
+    public static final int NUEVOUSUARIO = 1;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private RecyclerView item_list;
     public Adapter adapter;
@@ -50,7 +51,6 @@ public class ListaQuedadasActivity extends AppCompatActivity {
     private static int iconos[] = { R.drawable.bbq, R.drawable.bolos, R.drawable.camping, R.drawable.cena, R.drawable.cine, R.drawable.copa,
             R.drawable.estudio, R.drawable.globos, R.drawable.gym, R.drawable.pastel, R.drawable.playa, R.drawable.regalo,
             R.drawable.viaje};
-    private static int iconowherevent = R.drawable.wherevent;
     private Date fechaconhorad;
     private SimpleDateFormat asdf;
     private String fechaconhora;
@@ -58,6 +58,26 @@ public class ListaQuedadasActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //creamos base local de usuario
+        usuarios = new ArrayList<>();
+        usuarios.add(new Usuario("pepe", "admin"));
+        //check usuario
+        db.collection("Usuarios").addSnapshotListener(ListaQuedadasActivity.this, new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
+                for (DocumentSnapshot doc : documentSnapshots) {
+                    //compara si el usuario local está registrado en Firebase
+                    if(usuarios.get(0).getUsername().equals(doc.getString("nombre"))){
+                        Toast.makeText(ListaQuedadasActivity.this, "Bienvenido de nuevo "+usuarios.get(0).getUsername(), Toast.LENGTH_SHORT).show();
+                    }
+                    else{
+                        Intent intent = new Intent(ListaQuedadasActivity.this, LoginActivity.class);
+                        startActivityForResult(intent, NUEVOUSUARIO);
+                    }
+                }
+            }
+        });
         setContentView(R.layout.activity_lista_quedadas);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -71,27 +91,6 @@ public class ListaQuedadasActivity extends AppCompatActivity {
                 startActivityForResult(intent, NUEVA_QUEDADA);
                 }
         });
-        //creamos base local de usuario
-        usuarios = new ArrayList<>(1); //limitamos la lista de users a 1
-        usuarios.add(new Usuario("pepepelotas",null));
-
-        //check usuario
-        db.collection("Usuarios").addSnapshotListener(ListaQuedadasActivity.this, new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
-                for (DocumentSnapshot doc : documentSnapshots) {
-                    //compara si el usuario local está registrado en Firebase
-                    if(usuarios.get(0).getUsername().equals(doc.getString("nombre"))){
-                        Toast.makeText(ListaQuedadasActivity.this, "Bienvenido de nuevo "+usuarios.get(0).getUsername(), Toast.LENGTH_SHORT).show();
-                    }
-                    else{
-                        Intent intent = new Intent(ListaQuedadasActivity.this, LoginActivity.class);
-                        startActivity(intent);
-                    }
-                }
-            }
-        });
-
 
 
         quedadas = new ArrayList<>();
@@ -146,33 +145,43 @@ public class ListaQuedadasActivity extends AppCompatActivity {
     //recuperamos info de la creación de un evento nuevo
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode==NUEVA_QUEDADA){
-            if (resultCode == RESULT_OK){
-                //convertimos el string en Date para guardarlo en Firebase
-                fechaconhora = data.getStringExtra("fechaconhora");
-                asdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss", Locale.ENGLISH);
-                try {
-                    fechaconhorad = asdf.parse(fechaconhora);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                Quedada nueva = new Quedada(null,
-                        data.getStringExtra("titulo"),
-                        data.getStringExtra("descripción"),
-                        data.getStringExtra("ubicacion"),
-                        "yomismo",
-                        data.getLongExtra("tipoevento",0),
-                         fechaconhorad,
-                        null
-                );
-                db.collection("Quedadas").add(nueva).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Log.i("Wherevent", "He grabado la nueva quedada");
-                    }
-                });
+        switch (requestCode){
+            case NUEVA_QUEDADA:
+        if (resultCode == RESULT_OK) {
+            //convertimos el string en Date para guardarlo en Firebase
+            fechaconhora = data.getStringExtra("fechaconhora");
+            asdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss", Locale.ENGLISH);
+            try {
+                fechaconhorad = asdf.parse(fechaconhora);
+            } catch (ParseException e) {
+                e.printStackTrace();
             }
+            Quedada nueva = new Quedada(null,
+                    data.getStringExtra("titulo"),
+                    data.getStringExtra("descripción"),
+                    data.getStringExtra("ubicacion"),
+                    "yomismo",
+                    data.getLongExtra("tipoevento", 0),
+                    fechaconhorad,
+                    null
+            );
+            db.collection("Quedadas").add(nueva).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                @Override
+                public void onSuccess(DocumentReference documentReference) {
+                    Log.i("Wherevent", "He grabado la nueva quedada");
+                }
+            });
         }
+        break;
+            case NUEVOUSUARIO:
+                if(resultCode==RESULT_OK){
+                   Usuario usuario = new Usuario(data.getStringExtra("username"),null);
+                    //db.collection("Usuarios").add(usuario);
+                }
+
+                break;
+    }
+
         super.onActivityResult(requestCode, resultCode, data);
     }
 
