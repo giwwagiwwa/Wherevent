@@ -31,6 +31,10 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -38,6 +42,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Scanner;
+
+import jonathanfinerty.once.Once;
 
 public class ListaQuedadasActivity extends AppCompatActivity {
 
@@ -54,30 +61,75 @@ public class ListaQuedadasActivity extends AppCompatActivity {
     private Date fechaconhorad;
     private SimpleDateFormat asdf;
     private String fechaconhora;
+    private boolean nuevouser=false;
+
+
+    private void saveItemList() {
+        try {
+            FileOutputStream outputStream = openFileOutput("items.txt", MODE_PRIVATE);
+                String line = String.format("%s;%b\n", usuarios.get(0).getUsername(), usuarios.get(0).getUsercode());
+                outputStream.write(line.getBytes());
+
+        } catch (FileNotFoundException e) {
+            Toast.makeText(this, "No se ha podido abrir el fichero", Toast.LENGTH_SHORT).show();
+        } catch (IOException e) {
+            Toast.makeText(this, "No se ha podido escribir", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void readItemList() {
+        try {
+            FileInputStream inputStream = openFileInput("items.txt");
+            Scanner scanner = new Scanner(inputStream);
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                String[] parts = line.split(";");
+                usuarios.add(new Usuario(parts[0], parts[1]));
+            }
+        } catch (FileNotFoundException e) {
+            Log.e("Usuarios", "No he podido abrir el fichero");
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(usuarios.size()!=0) {
+            saveItemList();
+        }
+        else Toast.makeText(this, "No hay lista", Toast.LENGTH_SHORT).show();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        Once.initialise(this);
+        String tag = "tag";
+        if(!Once.beenDone(Once.THIS_APP_INSTALL,tag)){
+            NuevoUsuario();
+            Once.markDone(tag);
+        }
         //creamos base local de usuario
-        usuarios = new ArrayList<>();
-        usuarios.add(new Usuario("pepe", "admin"));
+        usuarios = new ArrayList<>(1);
         //check usuario
-        db.collection("Usuarios").addSnapshotListener(ListaQuedadasActivity.this, new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
-                for (DocumentSnapshot doc : documentSnapshots) {
-                    //compara si el usuario local está registrado en Firebase
-                    if(usuarios.get(0).getUsername().equals(doc.getString("nombre"))){
-                        Toast.makeText(ListaQuedadasActivity.this, "Bienvenido de nuevo "+usuarios.get(0).getUsername(), Toast.LENGTH_SHORT).show();
-                    }
-                    else{
-                        Intent intent = new Intent(ListaQuedadasActivity.this, LoginActivity.class);
-                        startActivityForResult(intent, NUEVOUSUARIO);
+
+            readItemList();
+            /*
+            db.collection("Usuarios").addSnapshotListener(ListaQuedadasActivity.this, new EventListener<QuerySnapshot>() {
+                @Override
+                public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
+                    for (DocumentSnapshot doc : documentSnapshots) {
+                        //compara si el usuario local está registrado en Firebase
+                        if (usuarios.get(0).getUsername().equals(doc.getString("nombre"))) {
+                            Toast.makeText(ListaQuedadasActivity.this, "Bienvenido de nuevo " + usuarios.get(0).getUsername(), Toast.LENGTH_SHORT).show();
+                        } else {
+                            nuevouser = true;
+                        }
                     }
                 }
-            }
-        });
+            });*/
+            if(nuevouser) NuevoUsuario();
+
         setContentView(R.layout.activity_lista_quedadas);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -101,6 +153,12 @@ public class ListaQuedadasActivity extends AppCompatActivity {
         adapter = new Adapter();
         item_list.setAdapter(adapter);
         item_list.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+    }
+
+
+    private void NuevoUsuario() {
+        Intent intent = new Intent(ListaQuedadasActivity.this, LoginActivity.class);
+        startActivityForResult(intent, NUEVOUSUARIO);
     }
 
     @Override
@@ -173,10 +231,13 @@ public class ListaQuedadasActivity extends AppCompatActivity {
             });
         }
         break;
+
             case NUEVOUSUARIO:
                 if(resultCode==RESULT_OK){
-                   Usuario usuario = new Usuario(data.getStringExtra("username"),null);
-                    //db.collection("Usuarios").add(usuario);
+                    Usuario nuevo = new Usuario(data.getStringExtra("username"),
+                            null);
+                   usuarios.add(nuevo);
+                    db.collection("Usuarios").add(nuevo);
                 }
 
                 break;

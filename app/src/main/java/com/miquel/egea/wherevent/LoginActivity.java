@@ -19,10 +19,11 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void onClickCrear(View view) {
-        String username = (String) usernameedit.getText();
+        String username = usernameedit.getText().toString();
         Intent intent = new Intent();
         intent.putExtra("username", username);
-        setResult(RESULT_OK);
+        setResult(RESULT_OK,intent);
+        finish();
 
     }
 }
