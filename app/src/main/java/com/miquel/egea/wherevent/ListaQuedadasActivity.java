@@ -114,21 +114,17 @@ public class ListaQuedadasActivity extends AppCompatActivity {
         //check usuario
 
             readItemList();
-            /*
             db.collection("Usuarios").addSnapshotListener(ListaQuedadasActivity.this, new EventListener<QuerySnapshot>() {
                 @Override
                 public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
                     for (DocumentSnapshot doc : documentSnapshots) {
                         //compara si el usuario local está registrado en Firebase
-                        if (usuarios.get(0).getUsername().equals(doc.getString("nombre"))) {
+                        if (usuarios.get(0).getUsername().equals(doc.getString("username"))) {
                             Toast.makeText(ListaQuedadasActivity.this, "Bienvenido de nuevo " + usuarios.get(0).getUsername(), Toast.LENGTH_SHORT).show();
-                        } else {
-                            nuevouser = true;
                         }
                     }
                 }
-            });*/
-            if(nuevouser) NuevoUsuario();
+            });
 
         setContentView(R.layout.activity_lista_quedadas);
 
