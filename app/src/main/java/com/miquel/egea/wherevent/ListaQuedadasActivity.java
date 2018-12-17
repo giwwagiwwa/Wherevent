@@ -20,9 +20,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -33,8 +31,6 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -44,8 +40,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
 
-import jonathanfinerty.once.Once;
-
 public class ListaQuedadasActivity extends AppCompatActivity {
 
     private static final int NUEVA_QUEDADA = 0;
@@ -54,79 +48,34 @@ public class ListaQuedadasActivity extends AppCompatActivity {
     private RecyclerView item_list;
     public Adapter adapter;
     List<Quedada> quedadas;
-    List<Usuario> usuarios;
+    public Usuario usuario;
     private static int iconos[] = { R.drawable.bbq, R.drawable.bolos, R.drawable.camping, R.drawable.cena, R.drawable.cine, R.drawable.copa,
             R.drawable.estudio, R.drawable.globos, R.drawable.gym, R.drawable.pastel, R.drawable.playa, R.drawable.regalo,
             R.drawable.viaje};
     private Date fechaconhorad;
     private SimpleDateFormat asdf;
     private String fechaconhora;
-    private boolean nuevouser=false;
 
-
-    private void saveItemList() {
-        try {
-            FileOutputStream outputStream = openFileOutput("items.txt", MODE_PRIVATE);
-                String line = String.format("%s;%b\n", usuarios.get(0).getUsername(), usuarios.get(0).getUsercode());
-                outputStream.write(line.getBytes());
-
-        } catch (FileNotFoundException e) {
-            Toast.makeText(this, "No se ha podido abrir el fichero", Toast.LENGTH_SHORT).show();
-        } catch (IOException e) {
-            Toast.makeText(this, "No se ha podido escribir", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void readItemList() {
+    private void readUser() {
         try {
             FileInputStream inputStream = openFileInput("items.txt");
             Scanner scanner = new Scanner(inputStream);
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
                 String[] parts = line.split(";");
-                usuarios.add(new Usuario(parts[0], parts[1]));
+                usuario = new Usuario(parts[0], "");
             }
         } catch (FileNotFoundException e) {
-            Log.e("Usuarios", "No he podido abrir el fichero");
+            Log.e("ShoppingList", "No he podido abrir el fichero");
         }
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        if(usuarios.size()!=0) {
-            saveItemList();
-        }
-        else Toast.makeText(this, "No hay lista", Toast.LENGTH_SHORT).show();
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Once.initialise(this);
-        String tag = "tag";
-        if(!Once.beenDone(Once.THIS_APP_INSTALL,tag)){
-            NuevoUsuario();
-            Once.markDone(tag);
-        }
-        //creamos base local de usuario
-        usuarios = new ArrayList<>(1);
-        //check usuario
-
-            readItemList();
-            db.collection("Usuarios").addSnapshotListener(ListaQuedadasActivity.this, new EventListener<QuerySnapshot>() {
-                @Override
-                public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
-                    for (DocumentSnapshot doc : documentSnapshots) {
-                        //compara si el usuario local está registrado en Firebase
-                        if (usuarios.get(0).getUsername().equals(doc.getString("username"))) {
-                            Toast.makeText(ListaQuedadasActivity.this, "Bienvenido de nuevo " + usuarios.get(0).getUsername(), Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                }
-            });
-
         setContentView(R.layout.activity_lista_quedadas);
+        readUser();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -140,7 +89,6 @@ public class ListaQuedadasActivity extends AppCompatActivity {
                 }
         });
 
-
         quedadas = new ArrayList<>();
 
         //layout y adaptador RecyclerView
@@ -151,11 +99,6 @@ public class ListaQuedadasActivity extends AppCompatActivity {
         item_list.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
     }
 
-
-    private void NuevoUsuario() {
-        Intent intent = new Intent(ListaQuedadasActivity.this, LoginActivity.class);
-        startActivityForResult(intent, NUEVOUSUARIO);
-    }
 
     @Override
     protected void onStart() {
@@ -214,7 +157,7 @@ public class ListaQuedadasActivity extends AppCompatActivity {
                     data.getStringExtra("titulo"),
                     data.getStringExtra("descripción"),
                     data.getStringExtra("ubicacion"),
-                    "yomismo",
+                    usuario.getUsername(),
                     data.getLongExtra("tipoevento", 0),
                     fechaconhorad,
                     null
@@ -232,7 +175,7 @@ public class ListaQuedadasActivity extends AppCompatActivity {
                 if(resultCode==RESULT_OK){
                     Usuario nuevo = new Usuario(data.getStringExtra("username"),
                             null);
-                   usuarios.add(nuevo);
+                   usuario.setUsername(data.getStringExtra("username"));
                     db.collection("Usuarios").add(nuevo);
                 }
 
@@ -303,6 +246,7 @@ public class ListaQuedadasActivity extends AppCompatActivity {
         intent.putExtra("hora",hora);
         intent.putExtra("tipoevento",quedadas.get(evento_position).getTipo_evento());
         intent.putExtra("descripción",quedadas.get(evento_position).getDescripción());
+        intent.putExtra("autor", quedadas.get(evento_position).getAutor());
         startActivity(intent);
     }
 
@@ -342,22 +286,27 @@ public class ListaQuedadasActivity extends AppCompatActivity {
             Quedada model_item = quedadas.get(position);
             //convertimos la hora de Date a String
             Date fechaconhorad = model_item.getFechaconhora();
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-            String fechaconhora = sdf.format(fechaconhorad);
-            //separamos fecha y hora
-            String[] fechayhora = fechaconhora.split(" ");
-            String fecha = fechayhora[0];
-            String hora = fechayhora[1];
+            if(fechaconhorad!=null) {
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+                String fechaconhora = sdf.format(fechaconhorad);
+                //separamos fecha y hora
+                String[] fechayhora = fechaconhora.split(" ");
+                String fecha = fechayhora[0];
+                String hora = fechayhora[1];
+                holder.fechaview.setText(fecha);
+                holder.horaview.setText(hora);
 
-            if (fechaconhorad.before(Calendar.getInstance().getTime())){
-                holder.eventopasadoview.setVisibility(View.VISIBLE);
+                if (fechaconhorad.before(Calendar.getInstance().getTime())){
+                    holder.eventopasadoview.setVisibility(View.VISIBLE);
+                }
+                else {holder.eventopasadoview.setVisibility(View.INVISIBLE);}
+
             }
-            else {holder.eventopasadoview.setVisibility(View.INVISIBLE);}
+
 
             holder.titleview.setText(model_item.getTitulo());
             holder.autorview.setText(model_item.getAutor());
-            holder.fechaview.setText(fecha);
-            holder.horaview.setText(hora);
+
             holder.ubicacionview.setText(model_item.getUbicacion());
             if(model_item.getTipo_evento()==0){
                 holder.iconoview.setImageResource(R.drawable.wherevent);

@@ -43,6 +43,7 @@ public class NewQuedadaActivity extends AppCompatActivity {
     private String dated;
     private String timed;
     private String fechaconhora;
+    private MyAdapter adapter;
 
 
     @Override
@@ -120,7 +121,8 @@ public class NewQuedadaActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         mylist.setLayoutManager(layoutManager);
-        mylist.setAdapter(new MyAdapter());
+        adapter = new MyAdapter();
+        mylist.setAdapter(adapter);
 
     }
 
@@ -144,9 +146,6 @@ public class NewQuedadaActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     onClickIconSelect(getAdapterPosition());
-
-                    if (getAdapterPosition() == getLayoutPosition()){
-                        image_view.setColorFilter(getResources().getColor(R.color.colorPrimary));}
                 }
             });
         }
@@ -155,6 +154,7 @@ public class NewQuedadaActivity extends AppCompatActivity {
     private void onClickIconSelect(long position) {
         Toast.makeText(this, "Icono seleccionado", Toast.LENGTH_SHORT).show();
         tipoevento=position;
+        adapter.notifyDataSetChanged();
         //nos quedamos con la posicion del icono en la lista
     }
 
@@ -170,6 +170,11 @@ public class NewQuedadaActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
            holder.image_view.setImageResource(iconos[position]);
+            if (position == tipoevento){
+                holder.image_view.setColorFilter(getResources().getColor(R.color.colorPrimary));
+            } else {
+                holder.image_view.setColorFilter(getResources().getColor(android.R.color.black));
+            }
         }
 
         @Override
