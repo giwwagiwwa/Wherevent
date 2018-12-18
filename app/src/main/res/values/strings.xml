@@ -1,5 +1,17 @@
 <resources>
-    <string name="app_name">Wherevent</string>
+    <string name="app_name" translatable="false">Wherevent</string>
     <string name="ranking_string">Settings</string>
-    <string name="title_activity_new_quedada">NewQuedadaActivity</string>
+    <string name="title_activity_new_quedada" translatable="false">NewQuedadaActivity</string>
+    <string name="title_login">Enter your username</string>
+    <string name="btn_login">Login</string>
+    <string name="hint_login">write here...</string>
+    <string name="hint_title_event">Title event...</string>
+    <string name="hint_location">Location</string>
+    <string name="hint_description">Description</string>
+    <string name="hint_date">Date</string>
+    <string name="hint_hour">Hour</string>
+    <string name="btn_create">Create</string>
+    <string name="ranking" translatable="false">Ranking</string>
+    <string name="the_good_one">\"The one that is always present\"</string>
+    <string name="the_bad_one">\"The one that is always missing\"</string>
 </resources>

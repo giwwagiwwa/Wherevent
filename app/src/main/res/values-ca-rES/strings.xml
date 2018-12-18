@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="title_login">Introdueixi el seu nom d\'usuari</string>
+    <string name="btn_login">Confirmar</string>
+    <string name="ranking_string">Ajustos</string>
+    <string name="hint_location">Ubicació</string>
+    <string name="hint_hour">Hora</string>
+    <string name="btn_create">Crear</string>
+    <string name="the_good_one">\"El que no falla mai\"</string>
+    <string name="hint_login">escrigui aquí...</string>
+    <string name="hint_title_event">Títol de la quedada...</string>
+    <string name="hint_description">Descripció</string>
+    <string name="hint_date">Data</string>
+    <string name="the_bad_one">\"El que sempre es raja\"</string>
+</resources>
