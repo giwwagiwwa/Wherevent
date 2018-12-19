@@ -70,6 +70,9 @@ public class ListaQuedadasActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -183,6 +186,11 @@ public class ListaQuedadasActivity extends AppCompatActivity {
     }
 
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    public void onClickRanking(MenuItem item) {
+        Intent intent = new Intent(ListaQuedadasActivity.this,RankingActivity.class);
+        startActivity(intent);
     }
 
     //RECYCLER VIEW LISTA QUEDADAS*******************************************************************************************

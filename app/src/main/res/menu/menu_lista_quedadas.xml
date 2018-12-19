@@ -6,6 +6,7 @@
         android:title="@string/ranking_string"
         android:icon="@drawable/ranking"
         android:orderInCategory="100"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="ifRoom"
+        android:onClick="onClickRanking"/>
 
 </menu>

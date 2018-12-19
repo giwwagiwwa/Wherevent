@@ -48,9 +48,9 @@ public class LoginActivity extends AppCompatActivity {
                 outputStream.write(line.getBytes());
 
         } catch (FileNotFoundException e) {
-            Toast.makeText(this, "No se ha podido abrir el fichero", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "No se ha podido cargar el usuario", Toast.LENGTH_SHORT).show();
         } catch (IOException e) {
-            Toast.makeText(this, "No se ha podido escribir", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "No se ha podido guardar el usuario", Toast.LENGTH_SHORT).show();
         }
     }
 
