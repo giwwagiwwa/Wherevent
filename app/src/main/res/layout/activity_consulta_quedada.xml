@@ -251,7 +251,8 @@
         android:text="SI"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guideline5"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        android:onClick="onClickAsistir"/>
 
     <Button
         android:id="@+id/declinar_btn"
@@ -265,7 +266,8 @@
         android:text="NO"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/guideline5" />
+        app:layout_constraintStart_toStartOf="@+id/guideline5"
+        android:onClick="onClickNoAsistir"/>
 
     <TextView
         android:id="@+id/textaceptar"

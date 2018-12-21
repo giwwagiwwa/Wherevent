@@ -55,6 +55,7 @@ public class ListaQuedadasActivity extends AppCompatActivity {
     private Date fechaconhorad;
     private SimpleDateFormat asdf;
     private String fechaconhora;
+    private Integer numerousuarios;
 
     private void readUser() {
         try {
@@ -105,6 +106,13 @@ public class ListaQuedadasActivity extends AppCompatActivity {
 
     @Override
     protected void onStart() {
+        db.collection("Usuarios").addSnapshotListener(ListaQuedadasActivity.this, new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
+                numerousuarios = documentSnapshots.size();
+            }
+        });
+
         db.collection("Quedadas").orderBy("fechaconhora",Query.Direction.DESCENDING).addSnapshotListener(ListaQuedadasActivity.this, new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
@@ -203,6 +211,7 @@ public class ListaQuedadasActivity extends AppCompatActivity {
         TextView noasistenview;
         TextView asistenview;
         TextView ubicacionview;
+        TextView nocontestanview;
         ImageView iconoview;
         ImageView eventopasadoview;
 
@@ -218,6 +227,7 @@ public class ListaQuedadasActivity extends AppCompatActivity {
             this.ubicacionview = itemView.findViewById(R.id.ubicacionview);
             this.iconoview = itemView.findViewById(R.id.iconoview);
             this.eventopasadoview = itemView.findViewById(R.id.eventopasadoview);
+            this.nocontestanview = itemView.findViewById(R.id.nocontestanview);
 
             //añadimos un listener a los elementos quedadas
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -303,6 +313,8 @@ public class ListaQuedadasActivity extends AppCompatActivity {
                 String hora = fechayhora[1];
                 holder.fechaview.setText(fecha);
                 holder.horaview.setText(hora);
+                String numerouser = numerousuarios.toString();
+                holder.nocontestanview.setText(numerouser);
 
                 if (fechaconhorad.before(Calendar.getInstance().getTime())){
                     holder.eventopasadoview.setVisibility(View.VISIBLE);

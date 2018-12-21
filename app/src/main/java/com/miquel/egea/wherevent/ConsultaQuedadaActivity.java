@@ -33,6 +33,7 @@ public class ConsultaQuedadaActivity extends AppCompatActivity {
         iconoview = findViewById(R.id.iconoview);
         autorview = findViewById(R.id.autorview);
 
+
         Intent data = getIntent();
         if (data!=null){
             String titulo = data.getStringExtra("titulo");
@@ -50,6 +51,14 @@ public class ConsultaQuedadaActivity extends AppCompatActivity {
             autorview.setText(sautorview);
             iconoview.setImageResource(iconos[(int)(long)tipoevento]);
         }
+
+    }
+
+    public void onClickAsistir(View view) {
+
+    }
+
+    public void onClickNoAsistir(View view) {
 
     }
 }

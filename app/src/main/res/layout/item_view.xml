@@ -13,6 +13,7 @@
         android:id="@+id/nocontestanview"
         android:layout_width="20dp"
         android:layout_height="20dp"
+        android:gravity="center_vertical|center_horizontal|center"
         android:text="TextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -23,6 +24,7 @@
         android:id="@+id/noasistenview"
         android:layout_width="20dp"
         android:layout_height="20dp"
+        android:gravity="center_vertical|center_horizontal|center"
         android:text="TextView"
         app:layout_constraintEnd_toStartOf="@+id/nocontestanview"
         app:layout_constraintHorizontal_bias="0.5"
@@ -145,6 +147,7 @@
         android:id="@+id/asistenview"
         android:layout_width="20dp"
         android:layout_height="20dp"
+        android:gravity="center_vertical|center_horizontal|center"
         android:text="TextView"
         app:layout_constraintEnd_toStartOf="@+id/noasistenview"
         app:layout_constraintHorizontal_bias="0.5"
@@ -190,8 +193,10 @@
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@color/pasado" />
 
 </android.support.constraint.ConstraintLayout>
