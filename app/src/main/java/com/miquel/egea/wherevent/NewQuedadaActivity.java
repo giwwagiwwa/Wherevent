@@ -5,11 +5,13 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
@@ -19,7 +21,12 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
+import java.util.Scanner;
 
 
 public class NewQuedadaActivity extends AppCompatActivity {
@@ -44,7 +51,21 @@ public class NewQuedadaActivity extends AppCompatActivity {
     private String timed;
     private String fechaconhora;
     private MyAdapter adapter;
-
+    ArrayList<Confirmacion> confirmaciones;
+    Usuario usuario;
+    private void readUser() {
+        try {
+            FileInputStream inputStream = openFileInput("items.txt");
+            Scanner scanner = new Scanner(inputStream);
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                String[] parts = line.split(";");
+                usuario = new Usuario(parts[0], "");
+            }
+        } catch (FileNotFoundException e) {
+            Log.e("ShoppingList", "No he podido abrir el fichero");
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +81,10 @@ public class NewQuedadaActivity extends AppCompatActivity {
         titulo_edit="";
         descripcion_edit="";
         ubicacion_edit="";
+        confirmaciones = new ArrayList<>();
         tipoevento = 0L;
+        readUser();
+
 
         fechaedit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -191,6 +215,7 @@ public class NewQuedadaActivity extends AppCompatActivity {
         ubicacion_edit = ubicacionedit.getText().toString();
         descripcion_edit = descripcionedit.getText().toString();
         fechaconhora = dated +" "+ timed;
+        confirmaciones.add(new Confirmacion(usuario.getUsername(), 1));
         //comprobamos si el usuario ha escrito en todos los campos
         ComprobarDatosVacios();
 
@@ -246,6 +271,8 @@ public class NewQuedadaActivity extends AppCompatActivity {
         data.putExtra("fechaconhora",fechaconhora);
         data.putExtra("descripción",descripcion_edit);
         data.putExtra("tipoevento",tipoevento);
+        data.putExtra("confirmaciones", confirmaciones);
+
         setResult(RESULT_OK,data);
         finish();
     }

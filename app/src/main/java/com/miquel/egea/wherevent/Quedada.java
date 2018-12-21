@@ -1,5 +1,6 @@
 package com.miquel.egea.wherevent;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -9,12 +10,12 @@ public class Quedada {
     private Long tipo_evento;
     private Date fechaconhora;
 
-    private List<Confirmacion> confirmaciones;
+    private ArrayList<Confirmacion> confirmaciones;
 
     public Quedada() {
     }
 
-    public Quedada(String identificador, String titulo, String descripción, String ubicacion, String autor, Long tipo_evento, Date fechaconhora, List<Confirmacion> confirmaciones) {
+    public Quedada(String identificador, String titulo, String descripción, String ubicacion, String autor, Long tipo_evento, Date fechaconhora, ArrayList<Confirmacion> confirmaciones) {
         this.identificador = identificador;
         this.titulo = titulo;
         this.descripción = descripción;
@@ -86,7 +87,7 @@ public class Quedada {
         return confirmaciones;
     }
 
-    public void setConfirmaciones(List<Confirmacion> confirmaciones) {
+    public void setConfirmaciones(ArrayList<Confirmacion> confirmaciones) {
         this.confirmaciones = confirmaciones;
     }
 }

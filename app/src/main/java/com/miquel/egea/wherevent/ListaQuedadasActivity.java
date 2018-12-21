@@ -18,7 +18,6 @@ import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
@@ -55,7 +54,9 @@ public class ListaQuedadasActivity extends AppCompatActivity {
     private Date fechaconhorad;
     private SimpleDateFormat asdf;
     private String fechaconhora;
-    private Integer numerousuarios;
+    private Integer TotalUsuarios;
+    private Integer UsuariosAsisten;
+    private Integer UsuariosNoAsisten;
 
     private void readUser() {
         try {
@@ -109,7 +110,7 @@ public class ListaQuedadasActivity extends AppCompatActivity {
         db.collection("Usuarios").addSnapshotListener(ListaQuedadasActivity.this, new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
-                numerousuarios = documentSnapshots.size();
+                TotalUsuarios = documentSnapshots.size();
             }
         });
 
@@ -119,6 +120,7 @@ public class ListaQuedadasActivity extends AppCompatActivity {
                 quedadas.clear();
                 for (DocumentSnapshot doc : documentSnapshots) {
                     Quedada q = doc.toObject(Quedada.class);
+                    //doc.getString
                     q.setIdentificador(doc.getId());
                     quedadas.add(q);
                 }
@@ -164,6 +166,7 @@ public class ListaQuedadasActivity extends AppCompatActivity {
             } catch (ParseException e) {
                 e.printStackTrace();
             }
+
             Quedada nueva = new Quedada(null,
                     data.getStringExtra("titulo"),
                     data.getStringExtra("descripción"),
@@ -171,7 +174,7 @@ public class ListaQuedadasActivity extends AppCompatActivity {
                     usuario.getUsername(),
                     data.getLongExtra("tipoevento", 0),
                     fechaconhorad,
-                    null
+                    (ArrayList<Confirmacion>)data.getSerializableExtra("confirmaciones")
             );
             db.collection("Quedadas").add(nueva).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                 @Override
@@ -313,7 +316,7 @@ public class ListaQuedadasActivity extends AppCompatActivity {
                 String hora = fechayhora[1];
                 holder.fechaview.setText(fecha);
                 holder.horaview.setText(hora);
-                String numerouser = numerousuarios.toString();
+                String numerouser = TotalUsuarios.toString();
                 holder.nocontestanview.setText(numerouser);
 
                 if (fechaconhorad.before(Calendar.getInstance().getTime())){
