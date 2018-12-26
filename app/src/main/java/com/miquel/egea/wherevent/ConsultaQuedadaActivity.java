@@ -29,7 +29,7 @@ public class ConsultaQuedadaActivity extends AppCompatActivity {
 
     private void readUser() {
         try {
-            FileInputStream inputStream = openFileInput("items.txt");
+            FileInputStream inputStream = openFileInput("user.txt");
             Scanner scanner = new Scanner(inputStream);
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
@@ -37,7 +37,7 @@ public class ConsultaQuedadaActivity extends AppCompatActivity {
                 usuario = new Usuario(parts[0], "");
             }
         } catch (FileNotFoundException e) {
-            Log.e("ShoppingList", "No he podido abrir el fichero");
+            Log.e("User", "No he podido abrir el fichero");
         }
     }
 

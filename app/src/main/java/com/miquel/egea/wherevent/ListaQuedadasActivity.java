@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
@@ -38,6 +39,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
+
+import jonathanfinerty.once.Once;
 
 public class ListaQuedadasActivity extends AppCompatActivity {
 
@@ -60,49 +63,55 @@ public class ListaQuedadasActivity extends AppCompatActivity {
 
     private void readUser() {
         try {
-            FileInputStream inputStream = openFileInput("items.txt");
+            FileInputStream inputStream = openFileInput("user.txt");
             Scanner scanner = new Scanner(inputStream);
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
                 String[] parts = line.split(";");
-                usuario = new Usuario(parts[0], "");
+                usuario = new Usuario(parts[0], parts[1]);
             }
         } catch (FileNotFoundException e) {
-            Log.e("ShoppingList", "No he podido abrir el fichero");
+            Log.e("User", "No he podido abrir el fichero");
         }
     }
 
-    @Override
-    public void onBackPressed() {
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_lista_quedadas);
-        readUser();
+        //consultamos el user
+        Once.initialise(this);
+        String tag = "ya registrado";
+        if (!Once.beenDone(Once.THIS_APP_INSTALL, tag)) {
+            Once.markDone(tag);
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivityForResult(intent, NUEVOUSUARIO);
+        }
+            setContentView(R.layout.activity_lista_quedadas);
+            readUser();
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+            setSupportActionBar(toolbar);
 
-        FloatingActionButton btn_newquedada = (FloatingActionButton) findViewById(R.id.btn_newquedada);
-        btn_newquedada.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(ListaQuedadasActivity.this, NewQuedadaActivity.class);
-                startActivityForResult(intent, NUEVA_QUEDADA);
+            FloatingActionButton btn_newquedada = (FloatingActionButton) findViewById(R.id.btn_newquedada);
+            btn_newquedada.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(ListaQuedadasActivity.this, NewQuedadaActivity.class);
+                    startActivityForResult(intent, NUEVA_QUEDADA);
                 }
-        });
+            });
 
-        quedadas = new ArrayList<>();
+            quedadas = new ArrayList<>();
 
-        //layout y adaptador RecyclerView
-        item_list = findViewById(R.id.item_list);
-        item_list.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new Adapter();
-        item_list.setAdapter(adapter);
-        item_list.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-    }
+            //layout y adaptador RecyclerView
+            item_list = findViewById(R.id.item_list);
+            item_list.setLayoutManager(new LinearLayoutManager(this));
+            adapter = new Adapter();
+            item_list.setAdapter(adapter);
+            item_list.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        }
+
 
 
     @Override
@@ -119,9 +128,16 @@ public class ListaQuedadasActivity extends AppCompatActivity {
             public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
                 quedadas.clear();
                 for (DocumentSnapshot doc : documentSnapshots) {
-                    Quedada q = doc.toObject(Quedada.class);
-                    //doc.getString
+                    //Quedada q = doc.toObject(Quedada.class);
+                    Quedada q = new Quedada();
+                    q.setTitulo(doc.getString("titulo"));
+                    q.setAutor(doc.getString("autor"));
+                    q.setDescripción(doc.getString("descripción"));
+                    q.setTipo_evento(doc.getLong("tipo_evento"));
+                    q.setUbicacion(doc.getString("ubicacion"));
+                    q.setFechaconhora(doc.getDate("fechaconhora"));
                     q.setIdentificador(doc.getId());
+                    //q.setConfirmaciones(doc.getData());
                     quedadas.add(q);
                 }
                 adapter.notifyDataSetChanged();
@@ -187,12 +203,7 @@ public class ListaQuedadasActivity extends AppCompatActivity {
 
             case NUEVOUSUARIO:
                 if(resultCode==RESULT_OK){
-                    Usuario nuevo = new Usuario(data.getStringExtra("username"),
-                            null);
-                   usuario.setUsername(data.getStringExtra("username"));
-                    db.collection("Usuarios").add(nuevo);
                 }
-
                 break;
     }
 
@@ -268,6 +279,7 @@ public class ListaQuedadasActivity extends AppCompatActivity {
         intent.putExtra("tipoevento",quedadas.get(evento_position).getTipo_evento());
         intent.putExtra("descripción",quedadas.get(evento_position).getDescripción());
         intent.putExtra("autor", quedadas.get(evento_position).getAutor());
+        intent.putExtra("identificador", quedadas.get(evento_position).getIdentificador());
         startActivity(intent);
     }
 
@@ -278,7 +290,8 @@ public class ListaQuedadasActivity extends AppCompatActivity {
         builder.setPositiveButton("Borrar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                removeitem(position);
+                if(usuario.getUsername().equals(quedadas.get(position).getAutor())) removeitem(position);
+                else Toast.makeText(ListaQuedadasActivity.this, "Solo el creador del evento puede eliminarlo.", Toast.LENGTH_LONG).show();
             }
         });
         builder.setNegativeButton(android.R.string.cancel, null);
@@ -331,7 +344,7 @@ public class ListaQuedadasActivity extends AppCompatActivity {
             holder.autorview.setText(model_item.getAutor());
 
             holder.ubicacionview.setText(model_item.getUbicacion());
-            if(model_item.getTipo_evento()==0){
+            if(model_item.getTipo_evento()==0L){
                 holder.iconoview.setImageResource(R.drawable.wherevent);
             }
             else holder.iconoview.setImageResource(iconos[(int)(long)model_item.getTipo_evento()]);
