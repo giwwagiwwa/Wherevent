@@ -1,16 +1,27 @@
 package com.miquel.egea.wherevent;
 
+import android.content.ClipData;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.Menu;
@@ -60,6 +71,8 @@ public class ListaQuedadasActivity extends AppCompatActivity {
     private Integer TotalUsuarios;
     private Integer UsuariosAsisten;
     private Integer UsuariosNoAsisten;
+    final ColorDrawable background = new ColorDrawable(Color.RED);
+    public static final float ALPHA_FULL = 1.0f;
 
     private void readUser() {
         try {
@@ -87,30 +100,97 @@ public class ListaQuedadasActivity extends AppCompatActivity {
             Intent intent = new Intent(this, LoginActivity.class);
             startActivityForResult(intent, NUEVOUSUARIO);
         }
-            setContentView(R.layout.activity_lista_quedadas);
-            readUser();
+        setContentView(R.layout.activity_lista_quedadas);
+        readUser();
 
-            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-            setSupportActionBar(toolbar);
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
-            FloatingActionButton btn_newquedada = (FloatingActionButton) findViewById(R.id.btn_newquedada);
-            btn_newquedada.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(ListaQuedadasActivity.this, NewQuedadaActivity.class);
-                    startActivityForResult(intent, NUEVA_QUEDADA);
+        FloatingActionButton btn_newquedada = (FloatingActionButton) findViewById(R.id.btn_newquedada);
+        btn_newquedada.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ListaQuedadasActivity.this, NewQuedadaActivity.class);
+                startActivityForResult(intent, NUEVA_QUEDADA);
+            }
+        });
+
+        quedadas = new ArrayList<>();
+
+        //layout y adaptador RecyclerView
+        item_list = findViewById(R.id.item_list);
+        item_list.setLayoutManager(new LinearLayoutManager(this));
+        adapter = new Adapter();
+        item_list.setAdapter(adapter);
+        item_list.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+
+        //Permite deslizar "swipe" las tarjetas de la lista quedadas
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT){
+
+            //Dar color al fondo de las tarjetas
+            @Override
+            public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+                if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
+                    // Get RecyclerView item from the ViewHolder
+                    View itemView = viewHolder.itemView;
+
+                    Paint p = new Paint();
+
+
+                    if (dX > 0) {
+
+                        p.setColor(getResources().getColor(R.color.aceptar));
+
+
+                        // Draw Rect with varying right side, equal to displacement dX
+                        c.drawRect((float) itemView.getLeft(), (float) itemView.getTop(), dX,
+                                (float) itemView.getBottom(), p);
+
+
+                    } else {
+                        p.setColor(getResources().getColor(R.color.rechazar));
+
+                        // Draw Rect with varying left side, equal to the item's right side plus negative displacement dX
+                        c.drawRect((float) itemView.getRight() + dX, (float) itemView.getTop(),
+                                (float) itemView.getRight(), (float) itemView.getBottom(), p);
+                    }
+
+                    // Fade out the view as it is swiped out of the parent's bounds
+                    final float alpha = ALPHA_FULL - Math.abs(dX) / (float) viewHolder.itemView.getWidth();
+                    viewHolder.itemView.setAlpha(alpha);
+                    viewHolder.itemView.setTranslationX(dX);
+
+                } else {
+                    super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
                 }
-            });
+            }
 
-            quedadas = new ArrayList<>();
 
-            //layout y adaptador RecyclerView
-            item_list = findViewById(R.id.item_list);
-            item_list.setLayoutManager(new LinearLayoutManager(this));
-            adapter = new Adapter();
-            item_list.setAdapter(adapter);
-            item_list.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-        }
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction)
+
+            {
+                if (direction == ItemTouchHelper.RIGHT) {
+                    Toast.makeText(ListaQuedadasActivity.this, "Aceptado", Toast.LENGTH_SHORT).show();
+                    //AÑADIR AQUI CONFIRMACIÓN EVENTO
+
+                } else {
+                    Toast.makeText(ListaQuedadasActivity.this, "Rechazado", Toast.LENGTH_SHORT).show();
+                    //AÑADIR AQUI DECLINACIÓN EVENTO
+                }
+            }
+
+        }).attachToRecyclerView(item_list);
+
+    }
+
+
 
 
 
@@ -259,6 +339,7 @@ public class ListaQuedadasActivity extends AppCompatActivity {
                     return false;
                 }
             });
+
         }
     }
 
