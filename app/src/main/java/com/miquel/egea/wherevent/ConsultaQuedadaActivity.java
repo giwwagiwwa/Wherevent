@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 
@@ -25,6 +26,9 @@ public class ConsultaQuedadaActivity extends AppCompatActivity {
     private ImageView iconoview;
     private TextView autorview;
     private Usuario usuario;
+    private ArrayList<String> Asisten, NoAsisten;
+    private TextView asistenview;
+    private TextView noasistenview;
 
 
     private void readUser() {
@@ -54,6 +58,8 @@ public class ConsultaQuedadaActivity extends AppCompatActivity {
         ubicacionview = findViewById(R.id.ubicacionview);
         iconoview = findViewById(R.id.iconoview);
         autorview = findViewById(R.id.autorview);
+        asistenview = findViewById(R.id.asistenview);
+        noasistenview = findViewById(R.id.noasistenview);
 
 
         Intent data = getIntent();
@@ -68,11 +74,29 @@ public class ConsultaQuedadaActivity extends AppCompatActivity {
             horaview.setText(hora);
             String fecha = data.getStringExtra("fecha");
             fechaview.setText(fecha);
-            Long tipoevento = data.getLongExtra("tipoevento",-1);
             String sautorview = data.getStringExtra("autor");
             autorview.setText(sautorview);
-            iconoview.setImageResource(iconos[(int)(long)tipoevento]);
+
+            Long tipoevento = data.getLongExtra("tipoevento",-1);
+            //comprobamos si ha clicado en un icono
+            if(tipoevento==-1){
+                iconoview.setImageResource(R.drawable.wherevent);
+            }
+            else iconoview.setImageResource(iconos[(int)(long)tipoevento]);
+
+            ArrayList<Confirmacion> confirmacions = (ArrayList<Confirmacion>) data.getSerializableExtra("confirmaciones");
+            //recorremos la lista de confirmaciones y miramos si asisten o no
+                //NO FUNCIONA ESTE FOR
+            /*for(int i=0; i<confirmacions.size();i++){
+                if(confirmacions.get(i).getConfirma()==0){ //no asisten
+                    NoAsisten.add(confirmacions.get(i).getCodigo_usuario());
+                }
+                else if(confirmacions.get(i).getConfirma()==1){ //asisten
+                    Asisten.add(confirmacions.get(i).getCodigo_usuario());
+                }
+            }*/
         }
+
 
     }
 

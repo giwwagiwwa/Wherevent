@@ -136,18 +136,11 @@ public class ListaQuedadasActivity extends AppCompatActivity {
                     View itemView = viewHolder.itemView;
 
                     Paint p = new Paint();
-
-
                     if (dX > 0) {
-
                         p.setColor(getResources().getColor(R.color.aceptar));
-
-
                         // Draw Rect with varying right side, equal to displacement dX
                         c.drawRect((float) itemView.getLeft(), (float) itemView.getTop(), dX,
                                 (float) itemView.getBottom(), p);
-
-
                     } else {
                         p.setColor(getResources().getColor(R.color.rechazar));
 
@@ -166,7 +159,6 @@ public class ListaQuedadasActivity extends AppCompatActivity {
                 }
             }
 
-
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
                 return false;
@@ -174,7 +166,6 @@ public class ListaQuedadasActivity extends AppCompatActivity {
 
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction)
-
             {
                 if (direction == ItemTouchHelper.RIGHT) {
                     Toast.makeText(ListaQuedadasActivity.this, "Aceptado", Toast.LENGTH_SHORT).show();
@@ -189,9 +180,6 @@ public class ListaQuedadasActivity extends AppCompatActivity {
         }).attachToRecyclerView(item_list);
 
     }
-
-
-
 
 
     @Override
@@ -217,7 +205,8 @@ public class ListaQuedadasActivity extends AppCompatActivity {
                     q.setUbicacion(doc.getString("ubicacion"));
                     q.setFechaconhora(doc.getDate("fechaconhora"));
                     q.setIdentificador(doc.getId());
-                    //q.setConfirmaciones(doc.getData());
+                    ArrayList<Confirmacion> confirmacionsList = (ArrayList<Confirmacion>) doc.get("confirmaciones");
+                    q.setConfirmaciones(confirmacionsList);
                     quedadas.add(q);
                 }
                 adapter.notifyDataSetChanged();
@@ -361,13 +350,14 @@ public class ListaQuedadasActivity extends AppCompatActivity {
         intent.putExtra("descripción",quedadas.get(evento_position).getDescripción());
         intent.putExtra("autor", quedadas.get(evento_position).getAutor());
         intent.putExtra("identificador", quedadas.get(evento_position).getIdentificador());
+        intent.putExtra("confirmaciones",(ArrayList<Confirmacion>) quedadas.get(evento_position).getConfirmaciones());
         startActivity(intent);
     }
 
     public void onLongClickItem(final int position){
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("¿Seguro que quieres borrar '"+ quedadas.get(position).getTitulo()+"'?");
+        builder.setMessage("¿Seguro que quieres borrar el evento '"+ quedadas.get(position).getTitulo()+"'?");
         builder.setPositiveButton("Borrar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -387,8 +377,6 @@ public class ListaQuedadasActivity extends AppCompatActivity {
 
 
     class Adapter extends RecyclerView.Adapter<MyViewHolder> {
-        //llenar lista manual
-
         @NonNull
         @Override
         public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -417,15 +405,13 @@ public class ListaQuedadasActivity extends AppCompatActivity {
                     holder.eventopasadoview.setVisibility(View.VISIBLE);
                 }
                 else {holder.eventopasadoview.setVisibility(View.INVISIBLE);}
-
             }
-
 
             holder.titleview.setText(model_item.getTitulo());
             holder.autorview.setText(model_item.getAutor());
 
             holder.ubicacionview.setText(model_item.getUbicacion());
-            if(model_item.getTipo_evento()==0L){
+            if(model_item.getTipo_evento()==-1L){
                 holder.iconoview.setImageResource(R.drawable.wherevent);
             }
             else holder.iconoview.setImageResource(iconos[(int)(long)model_item.getTipo_evento()]);
@@ -438,6 +424,4 @@ public class ListaQuedadasActivity extends AppCompatActivity {
     }
 
 //FIN RECYCLER VIEW LISTA QUEDADAS **************************************************************************************
-
-
 }

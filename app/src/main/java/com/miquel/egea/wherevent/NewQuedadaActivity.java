@@ -53,6 +53,7 @@ public class NewQuedadaActivity extends AppCompatActivity {
     private MyAdapter adapter;
     ArrayList<Confirmacion> confirmaciones;
     Usuario usuario;
+
     private void readUser() {
         try {
             FileInputStream inputStream = openFileInput("user.txt");
@@ -76,15 +77,14 @@ public class NewQuedadaActivity extends AppCompatActivity {
         fechaedit = this.findViewById(R.id.fechaedit);
         horaedit = this.findViewById(R.id.horaedit);
         descripcionedit = this.findViewById(R.id.descripcionedit);
+        confirmaciones = new ArrayList<>();
         TextoVacioObligatorio =false;
         TextoVacioOpcional= false;
         titulo_edit="";
         descripcion_edit="";
         ubicacion_edit="";
-        confirmaciones = new ArrayList<>();
-        tipoevento = 0L;
+        tipoevento = -1L;
         readUser();
-
 
         fechaedit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -150,12 +150,6 @@ public class NewQuedadaActivity extends AppCompatActivity {
 
     }
 
-
-    @Override
-    protected void onStart() {
-
-        super.onStart();
-    }
 
     //recycler view iconos
     class ViewHolder extends RecyclerView.ViewHolder{
@@ -242,8 +236,6 @@ public class NewQuedadaActivity extends AppCompatActivity {
         else{
             ComprobarDatosObligatorios();
         }
-
-
     }
 
     private void ComprobarDatosObligatorios() {
@@ -281,6 +273,6 @@ public class NewQuedadaActivity extends AppCompatActivity {
         if(fechaedit.toString().equals("")){ TextoVacioObligatorio = true; }
         if(horaedit.toString().equals("")){ TextoVacioObligatorio = true; }
         if(descripcion_edit.equals("")){ TextoVacioOpcional = true; }
-        if(tipoevento==0L){ TextoVacioOpcional = true; }
+        if(tipoevento==-1L){ TextoVacioOpcional = true; }
     }
 }
