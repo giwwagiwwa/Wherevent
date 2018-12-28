@@ -9,6 +9,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -73,8 +74,6 @@ public class ListaQuedadasActivity extends AppCompatActivity {
     private Integer TotalUsuarios;
     private Integer UsuariosAsisten;
     private Integer UsuariosNoAsisten;
-    final ColorDrawable background = new ColorDrawable(Color.RED);
-    public static final float ALPHA_FULL = 1.0f;
     private Paint p = new Paint();
 
     private void readUser() {
@@ -128,29 +127,32 @@ public class ListaQuedadasActivity extends AppCompatActivity {
         item_list.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
 
         enableSwipe();
-
     }
     //Permite deslizar "swipe" las tarjetas de la lista quedadas
     public void enableSwipe() {
+
         ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
             @Override
+
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
                 return false;
             }
 
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                int position = viewHolder.getAdapterPosition();
 
-                if (direction == ItemTouchHelper.LEFT) {
-                    Toast.makeText(ListaQuedadasActivity.this, "Rechazado", Toast.LENGTH_SHORT).show();
-                    adapter.notifyDataSetChanged();
-                    //AÑADIR AQUI DECLINACIÓN EVENTO
-                } else {
-                    Toast.makeText(ListaQuedadasActivity.this, "Aceptado", Toast.LENGTH_SHORT).show();
-                    adapter.notifyDataSetChanged();
-                    //AÑADIR AQUI CONFIRMACIÓN EVENTO
-                }
+                    int position = viewHolder.getAdapterPosition();
+
+                    if (direction == ItemTouchHelper.LEFT) {
+                        Toast.makeText(ListaQuedadasActivity.this, "Rechazado", Toast.LENGTH_SHORT).show();
+                        adapter.notifyDataSetChanged();
+                        //AÑADIR AQUI DECLINACIÓN EVENTO
+                    } else {
+                        Toast.makeText(ListaQuedadasActivity.this, "Aceptado", Toast.LENGTH_SHORT).show();
+                        adapter.notifyDataSetChanged();
+                        //AÑADIR AQUI CONFIRMACIÓN EVENTO
+                    }
+
             }
             //Pinta el background al hacer el swipe
            @Override
@@ -158,6 +160,10 @@ public class ListaQuedadasActivity extends AppCompatActivity {
                                     int actionState, boolean isCurrentlyActive) {
 
                 Bitmap icon;
+                Drawable si = getResources().getDrawable(R.drawable.check_white);
+                Drawable no = getResources().getDrawable(R.drawable.cross_white);
+
+
                 if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
 
                     View itemView = viewHolder.itemView;
@@ -168,18 +174,17 @@ public class ListaQuedadasActivity extends AppCompatActivity {
                         p.setColor(getResources().getColor(R.color.aceptar));
                         RectF background = new RectF((float) itemView.getLeft(), (float) itemView.getTop(), dX, (float) itemView.getBottom());
                         c.drawRect(background, p);
-                       /* icon = BitmapFactory.decodeResource(getResources(), R.drawable.check);
+                        icon = drawableToBitmap(si);
                         RectF icon_dest = new RectF((float) itemView.getLeft() + width, (float) itemView.getTop() + width, (float) itemView.getLeft() + 2 * width, (float) itemView.getBottom() - width);
-                        c.drawBitmap(icon, null, icon_dest, p);*/
+                        c.drawBitmap(icon, null, icon_dest, p);
 
                     } else {
                         p.setColor(getResources().getColor(R.color.rechazar));
                         RectF background = new RectF((float) itemView.getRight() + dX, (float) itemView.getTop(), (float) itemView.getRight(), (float) itemView.getBottom());
                         c.drawRect(background, p);
-                     /*   icon = BitmapFactory.decodeResource(getResources(), R.drawable.cross);
+                        icon = drawableToBitmap(no);
                         RectF icon_dest = new RectF((float) itemView.getRight() - 2 * width, (float) itemView.getTop() + width, (float) itemView.getRight() - width, (float) itemView.getBottom() - width);
-                        c.drawBitmap(icon, null, icon_dest, p);*/
-
+                        c.drawBitmap(icon, null, icon_dest, p);
                     }
                 }
                 super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
@@ -190,6 +195,19 @@ public class ListaQuedadasActivity extends AppCompatActivity {
 
     }
 
+    public static Bitmap drawableToBitmap (Drawable drawable) {
+
+        if (drawable instanceof BitmapDrawable) {
+            return ((BitmapDrawable)drawable).getBitmap();
+        }
+
+        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+
+        return bitmap;
+    }
 
     @Override
     protected void onStart() {
