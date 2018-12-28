@@ -1,21 +1,17 @@
 package com.miquel.egea.wherevent;
 
-import android.content.ClipData;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
@@ -23,7 +19,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.Menu;
@@ -49,9 +44,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.EventObject;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Scanner;
 
 import jonathanfinerty.once.Once;
@@ -232,8 +228,21 @@ public class ListaQuedadasActivity extends AppCompatActivity {
                     q.setUbicacion(doc.getString("ubicacion"));
                     q.setFechaconhora(doc.getDate("fechaconhora"));
                     q.setIdentificador(doc.getId());
+                    //aqui obtenim l'array de la classe Confirmacio pero ple de HashMap
                     ArrayList<Confirmacion> confirmacionsList = (ArrayList<Confirmacion>) doc.get("confirmaciones");
-                    q.setConfirmaciones(confirmacionsList);
+                    //la llista final de Confirmacio
+                    ArrayList<Confirmacion> finalcon = new ArrayList<>();
+                    //recorrem l'array
+                    for(int i=0; i<=confirmacionsList.size();i++){
+                        //omplim el hashmap creat amb les dades
+                        Map<String, Object> hashMap = new HashMap<>();
+                        hashMap.putAll(confirmacionsList.get(i));
+                        //omplim un objecte confirmacion amb els camps del hashmap
+                        Confirmacion confirmacion = new Confirmacion((String) hashMap.get("codigo_usuario"),((Long) hashMap.get("confirma")).intValue());
+                        //afegim l'objecte a l'array final.
+                        finalcon.add(confirmacion);
+                    }
+                    q.setConfirmaciones(finalcon);
                     quedadas.add(q);
                 }
                 adapter.notifyDataSetChanged();

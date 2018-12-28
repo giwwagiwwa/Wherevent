@@ -7,9 +7,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -26,9 +28,9 @@ public class ConsultaQuedadaActivity extends AppCompatActivity {
     private ImageView iconoview;
     private TextView autorview;
     private Usuario usuario;
-    private ArrayList<String> Asisten, NoAsisten;
     private TextView asistenview;
     private TextView noasistenview;
+    ArrayList<Confirmacion> confirmacions;
 
 
     private void readUser() {
@@ -84,17 +86,20 @@ public class ConsultaQuedadaActivity extends AppCompatActivity {
             }
             else iconoview.setImageResource(iconos[(int)(long)tipoevento]);
 
-            ArrayList<Confirmacion> confirmacions = (ArrayList<Confirmacion>) data.getSerializableExtra("confirmaciones");
+            confirmacions = (ArrayList<Confirmacion>) data.getSerializableExtra("confirmaciones");
             //recorremos la lista de confirmaciones y miramos si asisten o no
                 //NO FUNCIONA ESTE FOR
-            /*for(int i=0; i<confirmacions.size();i++){
+
+            ArrayList<String> Asisten = null;
+            ArrayList<String> NoAsisten = null;
+            for(int i=0; i<confirmacions.size();i++){
                 if(confirmacions.get(i).getConfirma()==0){ //no asisten
                     NoAsisten.add(confirmacions.get(i).getCodigo_usuario());
                 }
                 else if(confirmacions.get(i).getConfirma()==1){ //asisten
                     Asisten.add(confirmacions.get(i).getCodigo_usuario());
                 }
-            }*/
+            }
         }
 
 
