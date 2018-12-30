@@ -101,6 +101,7 @@ public class ListaQuedadasActivity extends AppCompatActivity {
         }
         setContentView(R.layout.activity_lista_quedadas);
         readUser();
+        Toast.makeText(this, "Qué bien que hayas vuelto "+usuario.getUsername()+"!", Toast.LENGTH_LONG).show();
 
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -155,7 +156,6 @@ public class ListaQuedadasActivity extends AppCompatActivity {
            @Override
             public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY,
                                     int actionState, boolean isCurrentlyActive) {
-
                 Bitmap icon;
                 Drawable si = getResources().getDrawable(R.drawable.check_white);
                 Drawable no = getResources().getDrawable(R.drawable.cross_white);
@@ -426,10 +426,29 @@ public class ListaQuedadasActivity extends AppCompatActivity {
                 String hora = fechayhora[1];
                 holder.fechaview.setText(fecha);
                 holder.horaview.setText(hora);
+                //actualització asistents i no
+                ArrayList<String> asisten = new ArrayList<>();
+                ArrayList<String> noAsisten = new ArrayList<>();
+                ArrayList<Confirmacion> lista = (ArrayList<Confirmacion>) model_item.getConfirmaciones();
+                for(int i=0; i<lista.size();i++){
+                    if(lista.get(i).getConfirma()==0){ //no asisten
+                        noAsisten.add(lista.get(i).getCodigo_usuario());
+                    }
+                    else if(lista.get(i).getConfirma()==1){ //asisten
+                        asisten.add(lista.get(i).getCodigo_usuario());
+                    }
+                }
+                Integer asist = asisten.size();
+                Integer noasist = noAsisten.size();
+                if(asist==null)asist=0;
+                if(noasist==null)noasist=0;
+                holder.asistenview.setText(asist.toString());
+                holder.noasistenview.setText(noasist.toString());
 
+                TotalUsuarios=TotalUsuarios-asist-noasist;
                 if(TotalUsuarios==null) holder.nocontestanview.setText("0");
                 else holder.nocontestanview.setText(TotalUsuarios.toString());
-
+                //******************
 
                 if (fechaconhorad.before(Calendar.getInstance().getTime())){
                     holder.eventopasadoview.setVisibility(View.VISIBLE);

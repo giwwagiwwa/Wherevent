@@ -182,7 +182,7 @@ public class ConsultaQuedadaActivity extends AppCompatActivity {
         for(int i=0; i<noAsisten.size();i++){
             confirmaciones.add(new Confirmacion(noAsisten.get(i),0L));
         }
-        db.collection("Quedadas").document(identificador_quedada).update("confirmaciones", confirmaciones);
+        //db.collection("Quedadas").document(identificador_quedada).update("confirmaciones", confirmaciones);
         super.onStop();
     }
 }
