@@ -101,7 +101,6 @@ public class ListaQuedadasActivity extends AppCompatActivity {
         }
         setContentView(R.layout.activity_lista_quedadas);
         readUser();
-        Toast.makeText(ListaQuedadasActivity.this,"Que bien que estés de vuelta "+usuario.getUsername()+"!", Toast.LENGTH_SHORT).show();
 
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -368,23 +367,25 @@ public class ListaQuedadasActivity extends AppCompatActivity {
     private void onClickEvento(int evento_position) {
         Intent intent = new Intent(this, ConsultaQuedadaActivity.class);
         Date fechaconhorad = quedadas.get(evento_position).getFechaconhora();
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-        String fechaconhora = sdf.format(fechaconhorad);
-        //separamos fecha y hora
-        String[] fechayhora = fechaconhora.split(" ");
-        String fecha = fechayhora[0];
-        String hora = fechayhora[1];
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+            String fechaconhora = sdf.format(fechaconhorad);
+            //separamos fecha y hora
+            String[] fechayhora = fechaconhora.split(" ");
+            String fecha = fechayhora[0];
+            String hora = fechayhora[1];
 
-        intent.putExtra("titulo",quedadas.get(evento_position).getTitulo());
-        intent.putExtra("ubicacion",quedadas.get(evento_position).getUbicacion());
-        intent.putExtra("fecha",fecha);
-        intent.putExtra("hora",hora);
-        intent.putExtra("tipoevento",quedadas.get(evento_position).getTipo_evento());
-        intent.putExtra("descripción",quedadas.get(evento_position).getDescripción());
-        intent.putExtra("autor", quedadas.get(evento_position).getAutor());
-        intent.putExtra("identificador", quedadas.get(evento_position).getIdentificador());
-        intent.putExtra("confirmaciones",(ArrayList<Confirmacion>) quedadas.get(evento_position).getConfirmaciones());
-        startActivity(intent);
+            intent.putExtra("titulo", quedadas.get(evento_position).getTitulo());
+            intent.putExtra("ubicacion", quedadas.get(evento_position).getUbicacion());
+            intent.putExtra("fecha", fecha);
+            intent.putExtra("hora", hora);
+            intent.putExtra("tipoevento", quedadas.get(evento_position).getTipo_evento());
+            intent.putExtra("descripción", quedadas.get(evento_position).getDescripción());
+            intent.putExtra("autor", quedadas.get(evento_position).getAutor());
+            intent.putExtra("identificador", quedadas.get(evento_position).getIdentificador());
+            intent.putExtra("confirmaciones", (ArrayList<Confirmacion>) quedadas.get(evento_position).getConfirmaciones());
+            startActivity(intent);
+
+
     }
 
     public void onLongClickItem(final int position){

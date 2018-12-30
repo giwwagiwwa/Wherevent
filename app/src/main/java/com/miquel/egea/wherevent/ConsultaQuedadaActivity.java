@@ -7,6 +7,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.google.firebase.firestore.FirebaseFirestore;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -38,6 +40,13 @@ public class ConsultaQuedadaActivity extends AppCompatActivity {
     private String noasistenfinal;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private String identificador_quedada;
+    private String titulo;
+    private String ubicacion;
+    private String descripcion;
+    private String hora;
+    private String fecha;
+    private String autor;
+    private Long tipoevento;
 
 
     private void readUser() {
@@ -76,25 +85,25 @@ public class ConsultaQuedadaActivity extends AppCompatActivity {
         Intent data = getIntent();
         if (data!=null){
             identificador_quedada = data.getStringExtra("identificador");
-            String titulo = data.getStringExtra("titulo");
+            titulo = data.getStringExtra("titulo");
             tituloview.setText(titulo);
-            String ubicacion = data.getStringExtra("ubicacion");
+            ubicacion = data.getStringExtra("ubicacion");
             ubicacionview.setText(ubicacion);
-            String descripcion = data.getStringExtra("descripción");
+            descripcion = data.getStringExtra("descripción");
             descripcionview.setText(descripcion);
-            String hora = data.getStringExtra("hora");
+            hora = data.getStringExtra("hora");
             horaview.setText(hora);
-            String fecha = data.getStringExtra("fecha");
+            fecha = data.getStringExtra("fecha");
             fechaview.setText(fecha);
-            String sautorview = data.getStringExtra("autor");
-            autorview.setText(sautorview);
+            autor = data.getStringExtra("autor");
+            autorview.setText(autor);
 
-            Long tipoevento = data.getLongExtra("tipoevento",-1);
+            tipoevento = data.getLongExtra("tipoevento",-1);
             //comprobamos si ha clicado en un icono
-            if(tipoevento==-1){
+            if(tipoevento ==-1){
                 iconoview.setImageResource(R.drawable.wherevent);
             }
-            else iconoview.setImageResource(iconos[(int)(long)tipoevento]);
+            else iconoview.setImageResource(iconos[(int)(long) tipoevento]);
 
             confirmacions = (ArrayList<Confirmacion>) data.getSerializableExtra("confirmaciones");
             //recorremos la lista de confirmaciones y miramos si asisten o no
@@ -166,10 +175,6 @@ public class ConsultaQuedadaActivity extends AppCompatActivity {
 
     @Override
     protected void onStop() {
-        //Mirar las listas locales de asistir y no asistir y llenar el array clase Confirmación para
-        // subirlo al firebase. Se podría añadir un listener para ver si alguien más está modificando
-        //su estado en el mismo momento que tu
-
         ArrayList<Confirmacion> confirmaciones = new ArrayList<>();
         for(int i=0; i<asisten.size();i++){
             confirmaciones.add(new Confirmacion(asisten.get(i),1L));
@@ -178,8 +183,7 @@ public class ConsultaQuedadaActivity extends AppCompatActivity {
             confirmaciones.add(new Confirmacion(noAsisten.get(i),0L));
         }
 
-        //db.collection("Quedadas").document(identificador_quedada).set(confirmaciones);
-
+        db.collection("Quedadas").document(identificador_quedada).update("confirmaciones", confirmaciones);
         super.onStop();
     }
 }
