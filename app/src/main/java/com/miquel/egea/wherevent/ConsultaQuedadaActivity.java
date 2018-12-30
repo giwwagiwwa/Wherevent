@@ -90,8 +90,8 @@ public class ConsultaQuedadaActivity extends AppCompatActivity {
             //recorremos la lista de confirmaciones y miramos si asisten o no
                 //NO FUNCIONA ESTE FOR
 
-            ArrayList<String> Asisten = null;
-            ArrayList<String> NoAsisten = null;
+            ArrayList<String> Asisten = new ArrayList<>();
+            ArrayList<String> NoAsisten = new ArrayList<>();
             for(int i=0; i<confirmacions.size();i++){
                 if(confirmacions.get(i).getConfirma()==0){ //no asisten
                     NoAsisten.add(confirmacions.get(i).getCodigo_usuario());

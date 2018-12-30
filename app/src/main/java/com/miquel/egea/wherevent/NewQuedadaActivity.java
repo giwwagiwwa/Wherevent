@@ -208,7 +208,7 @@ public class NewQuedadaActivity extends AppCompatActivity {
         ubicacion_edit = ubicacionedit.getText().toString();
         descripcion_edit = descripcionedit.getText().toString();
         fechaconhora = dated +" "+ timed;
-        confirmaciones.add(new Confirmacion(usuario.getUsername(), 1));
+        confirmaciones.add(new Confirmacion(usuario.getUsername(), 1L));
         //comprobamos si el usuario ha escrito en todos los campos
         ComprobarDatosVacios();
 

@@ -9,6 +9,7 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -191,7 +192,7 @@ public class ListaQuedadasActivity extends AppCompatActivity {
 
     }
 
-    public static Bitmap drawableToBitmap (Drawable drawable) {
+    public static Bitmap drawableToBitmap(Drawable drawable) {
 
         if (drawable instanceof BitmapDrawable) {
             return ((BitmapDrawable)drawable).getBitmap();
@@ -229,18 +230,11 @@ public class ListaQuedadasActivity extends AppCompatActivity {
                     q.setFechaconhora(doc.getDate("fechaconhora"));
                     q.setIdentificador(doc.getId());
                     //aqui obtenim l'array de la classe Confirmacio pero ple de HashMap
-                    ArrayList<Confirmacion> confirmacionsList = (ArrayList<Confirmacion>) doc.get("confirmaciones");
+                    ArrayList<Map<String, Object>> confirmacionsList = (ArrayList<Map<String, Object>>) doc.get("confirmaciones");
                     //la llista final de Confirmacio
                     ArrayList<Confirmacion> finalcon = new ArrayList<>();
-                    //recorrem l'array
-                    for(int i=0; i<=confirmacionsList.size();i++){
-                        //omplim el hashmap creat amb les dades
-                        Map<String, Object> hashMap = new HashMap<>();
-                        hashMap.putAll(confirmacionsList.get(i));
-                        //omplim un objecte confirmacion amb els camps del hashmap
-                        Confirmacion confirmacion = new Confirmacion((String) hashMap.get("codigo_usuario"),((Long) hashMap.get("confirma")).intValue());
-                        //afegim l'objecte a l'array final.
-                        finalcon.add(confirmacion);
+                    for (Map<String, Object> map : confirmacionsList) {
+                        finalcon.add(new Confirmacion(map));
                     }
                     q.setConfirmaciones(finalcon);
                     quedadas.add(q);
