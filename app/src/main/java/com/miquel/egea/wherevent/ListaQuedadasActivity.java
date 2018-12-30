@@ -160,9 +160,7 @@ public class ListaQuedadasActivity extends AppCompatActivity {
                 Drawable si = getResources().getDrawable(R.drawable.check_white);
                 Drawable no = getResources().getDrawable(R.drawable.cross_white);
 
-
                 if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
-
                     View itemView = viewHolder.itemView;
                     float height = (float) itemView.getBottom() - (float) itemView.getTop();
                     float width = height / 3;
@@ -189,7 +187,6 @@ public class ListaQuedadasActivity extends AppCompatActivity {
         };
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
         itemTouchHelper.attachToRecyclerView(item_list);
-
     }
 
     public static Bitmap drawableToBitmap(Drawable drawable) {
@@ -202,7 +199,6 @@ public class ListaQuedadasActivity extends AppCompatActivity {
         Canvas canvas = new Canvas(bitmap);
         drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
         drawable.draw(canvas);
-
         return bitmap;
     }
 
@@ -258,7 +254,6 @@ public class ListaQuedadasActivity extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
         //noinspection SimplifiableIfStatement
         if (id == R.id.menu_ranking) {
             return true;
@@ -389,7 +384,6 @@ public class ListaQuedadasActivity extends AppCompatActivity {
     }
 
     public void onLongClickItem(final int position){
-
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("¿Seguro que quieres borrar el evento '"+ quedadas.get(position).getTitulo()+"'?");
         builder.setPositiveButton("Borrar", new DialogInterface.OnClickListener() {
