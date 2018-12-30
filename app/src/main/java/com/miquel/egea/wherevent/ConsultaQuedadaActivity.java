@@ -31,6 +31,10 @@ public class ConsultaQuedadaActivity extends AppCompatActivity {
     private TextView asistenview;
     private TextView noasistenview;
     ArrayList<Confirmacion> confirmacions;
+    private ArrayList<String> asisten;
+    private ArrayList<String> noAsisten;
+    private TextView textrechazar;
+    private TextView textaceptar;
 
 
     private void readUser() {
@@ -62,6 +66,8 @@ public class ConsultaQuedadaActivity extends AppCompatActivity {
         autorview = findViewById(R.id.autorview);
         asistenview = findViewById(R.id.asistenview);
         noasistenview = findViewById(R.id.noasistenview);
+        textaceptar = findViewById(R.id.textaceptar);
+        textrechazar = findViewById(R.id.textrechazar);
 
 
         Intent data = getIntent();
@@ -88,29 +94,72 @@ public class ConsultaQuedadaActivity extends AppCompatActivity {
 
             confirmacions = (ArrayList<Confirmacion>) data.getSerializableExtra("confirmaciones");
             //recorremos la lista de confirmaciones y miramos si asisten o no
-                //NO FUNCIONA ESTE FOR
 
-            ArrayList<String> Asisten = new ArrayList<>();
-            ArrayList<String> NoAsisten = new ArrayList<>();
+            asisten = new ArrayList<>();
+            noAsisten = new ArrayList<>();
             for(int i=0; i<confirmacions.size();i++){
                 if(confirmacions.get(i).getConfirma()==0){ //no asisten
-                    NoAsisten.add(confirmacions.get(i).getCodigo_usuario());
+                    noAsisten.add(confirmacions.get(i).getCodigo_usuario());
                 }
                 else if(confirmacions.get(i).getConfirma()==1){ //asisten
-                    Asisten.add(confirmacions.get(i).getCodigo_usuario());
+                    asisten.add(confirmacions.get(i).getCodigo_usuario());
                 }
             }
+            ActualizarDatos();
         }
 
 
     }
 
     public void onClickAsistir(View view) {
-
+        //comprovem si l'usuari esta a la llista de no asisteixen
+        for(int i=0; i<noAsisten.size();i++){
+            if(noAsisten.get(i).equals(usuario.getUsername())){
+                //l'eliminem,l'afegim a l'altra llista i sortim del bucle
+                noAsisten.remove(i);
+                asisten.add(usuario.getUsername());
+                break;
+            }
+        }
+        //Actualitzem la llista
+        ActualizarDatos();
 
     }
 
     public void onClickNoAsistir(View view) {
+        //comprovem si l'usuari esta a la llista de no asisteixen
+        for(int i=0; i<asisten.size();i++){
+            if(asisten.get(i).equals(usuario.getUsername())){
+                //l'eliminem,l'afegim a l'altra llista i sortim del bucle
+                asisten.remove(i);
+                noAsisten.add(usuario.getUsername());
+                break;
+            }
+        }
+        //Actualitzem la llista
+        ActualizarDatos();
+    }
 
+    public void ActualizarDatos(){
+        asistenview.setText("");
+        noasistenview.setText("");
+        Integer asisteni = asisten.size();
+        Integer noasisteni = noAsisten.size();
+        textaceptar.setText(asisteni.toString());
+        textrechazar.setText(noasisteni.toString());
+        for(int i = 0; i< asisten.size(); i++){
+            asistenview.setText(asisten.get(i)+"\n");
+        }
+        for(int i = 0; i< noAsisten.size(); i++){
+            noasistenview.setText(noAsisten.get(i)+"\n");
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        //Mirar las listas locales de asistir y no asistir y llenar el array clase Confirmación para
+        // subirlo al firebase. Se podría añadir un listener para ver si alguien más está modificando
+        //su estado en el mismo momento que tu
+        super.onStop();
     }
 }

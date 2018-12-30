@@ -302,6 +302,8 @@ public class ListaQuedadasActivity extends AppCompatActivity {
 
             case NUEVOUSUARIO:
                 if(resultCode==RESULT_OK){
+                    readUser();
+                    Toast.makeText(ListaQuedadasActivity.this, usuario.getUsername(), Toast.LENGTH_SHORT).show();
                 }
                 break;
     }
@@ -428,8 +430,10 @@ public class ListaQuedadasActivity extends AppCompatActivity {
                 String hora = fechayhora[1];
                 holder.fechaview.setText(fecha);
                 holder.horaview.setText(hora);
-                String numerouser = TotalUsuarios.toString();
-                holder.nocontestanview.setText(numerouser);
+
+                if(TotalUsuarios==null) holder.nocontestanview.setText("0");
+                else holder.nocontestanview.setText(TotalUsuarios.toString());
+
 
                 if (fechaconhorad.before(Calendar.getInstance().getTime())){
                     holder.eventopasadoview.setVisibility(View.VISIBLE);
