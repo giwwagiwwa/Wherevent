@@ -16,7 +16,6 @@ class Confirmacion implements Serializable {
 
     // 0 no asiste
     // 1 asiste
-    // 2 no contesta
 
     public Confirmacion(String codigo_usuario, Long confirma) {
         this.codigo_usuario = codigo_usuario;

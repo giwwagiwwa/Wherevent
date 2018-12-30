@@ -101,6 +101,7 @@ public class ListaQuedadasActivity extends AppCompatActivity {
         }
         setContentView(R.layout.activity_lista_quedadas);
         readUser();
+        Toast.makeText(ListaQuedadasActivity.this,"Que bien que estés de vuelta "+usuario.getUsername()+"!", Toast.LENGTH_SHORT).show();
 
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -303,7 +304,7 @@ public class ListaQuedadasActivity extends AppCompatActivity {
             case NUEVOUSUARIO:
                 if(resultCode==RESULT_OK){
                     readUser();
-                    Toast.makeText(ListaQuedadasActivity.this, usuario.getUsername(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ListaQuedadasActivity.this,"Bienvenido "+usuario.getUsername()+"!", Toast.LENGTH_SHORT).show();
                 }
                 break;
     }

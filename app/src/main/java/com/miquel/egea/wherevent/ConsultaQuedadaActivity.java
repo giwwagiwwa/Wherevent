@@ -7,11 +7,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
+import com.google.firebase.firestore.FirebaseFirestore;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -35,6 +33,11 @@ public class ConsultaQuedadaActivity extends AppCompatActivity {
     private ArrayList<String> noAsisten;
     private TextView textrechazar;
     private TextView textaceptar;
+    private Boolean ya_existe_user;
+    private String asistenfinal;
+    private String noasistenfinal;
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private String identificador_quedada;
 
 
     private void readUser() {
@@ -72,6 +75,7 @@ public class ConsultaQuedadaActivity extends AppCompatActivity {
 
         Intent data = getIntent();
         if (data!=null){
+            identificador_quedada = data.getStringExtra("identificador");
             String titulo = data.getStringExtra("titulo");
             tituloview.setText(titulo);
             String ubicacion = data.getStringExtra("ubicacion");
@@ -112,30 +116,30 @@ public class ConsultaQuedadaActivity extends AppCompatActivity {
     }
 
     public void onClickAsistir(View view) {
+        ya_existe_user=false;
         //comprovem si l'usuari esta a la llista de no asisteixen
         for(int i=0; i<noAsisten.size();i++){
-            if(noAsisten.get(i).equals(usuario.getUsername())){
-                //l'eliminem,l'afegim a l'altra llista i sortim del bucle
-                noAsisten.remove(i);
-                asisten.add(usuario.getUsername());
-                break;
-            }
+            if(noAsisten.get(i).equals(usuario.getUsername())) noAsisten.remove(i);//si estaba a l'altre llista l'eliminem
         }
+        for(int i=0; i<asisten.size();i++){
+            if(asisten.get(i).equals(usuario.getUsername())) ya_existe_user = true;
+        }
+        if(!ya_existe_user) asisten.add(usuario.getUsername()); //l'afegim a la llista correcta si no
         //Actualitzem la llista
         ActualizarDatos();
 
     }
 
     public void onClickNoAsistir(View view) {
-        //comprovem si l'usuari esta a la llista de no asisteixen
+        ya_existe_user=false;
+        //comprovem si l'usuari esta a la llista de si asisteixen
         for(int i=0; i<asisten.size();i++){
-            if(asisten.get(i).equals(usuario.getUsername())){
-                //l'eliminem,l'afegim a l'altra llista i sortim del bucle
-                asisten.remove(i);
-                noAsisten.add(usuario.getUsername());
-                break;
-            }
+            if(asisten.get(i).equals(usuario.getUsername()))asisten.remove(i);//si estaba a l'altre llista l'eliminem
         }
+        for(int i=0; i<noAsisten.size();i++){ //mirem si ja estava inclos aqui
+            if(noAsisten.get(i).equals(usuario.getUsername())) ya_existe_user=true;
+        }
+        if(!ya_existe_user) noAsisten.add(usuario.getUsername()); //l'afegim
         //Actualitzem la llista
         ActualizarDatos();
     }
@@ -147,12 +151,17 @@ public class ConsultaQuedadaActivity extends AppCompatActivity {
         Integer noasisteni = noAsisten.size();
         textaceptar.setText(asisteni.toString());
         textrechazar.setText(noasisteni.toString());
+        asistenfinal="";
+        noasistenfinal ="";
         for(int i = 0; i< asisten.size(); i++){
-            asistenview.setText(asisten.get(i)+"\n");
+            asistenfinal = asistenfinal +asisten.get(i)+"\n\n";
+            asistenview.setText(asistenfinal);
         }
         for(int i = 0; i< noAsisten.size(); i++){
-            noasistenview.setText(noAsisten.get(i)+"\n");
+            noasistenfinal = noasistenfinal+noAsisten.get(i)+"\n\n";
+            noasistenview.setText(noasistenfinal);
         }
+
     }
 
     @Override
@@ -160,6 +169,17 @@ public class ConsultaQuedadaActivity extends AppCompatActivity {
         //Mirar las listas locales de asistir y no asistir y llenar el array clase Confirmación para
         // subirlo al firebase. Se podría añadir un listener para ver si alguien más está modificando
         //su estado en el mismo momento que tu
+
+        ArrayList<Confirmacion> confirmaciones = new ArrayList<>();
+        for(int i=0; i<asisten.size();i++){
+            confirmaciones.add(new Confirmacion(asisten.get(i),1L));
+        }
+        for(int i=0; i<noAsisten.size();i++){
+            confirmaciones.add(new Confirmacion(noAsisten.get(i),0L));
+        }
+
+        //db.collection("Quedadas").document(identificador_quedada).set(confirmaciones);
+
         super.onStop();
     }
 }
