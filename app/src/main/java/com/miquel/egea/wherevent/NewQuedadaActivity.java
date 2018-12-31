@@ -262,7 +262,6 @@ public class NewQuedadaActivity extends AppCompatActivity {
         data.putExtra("descripción",descripcion_edit);
         data.putExtra("tipoevento",tipoevento);
         data.putExtra("confirmaciones", confirmaciones);
-
         setResult(RESULT_OK,data);
         finish();
     }

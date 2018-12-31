@@ -69,8 +69,6 @@ public class ListaQuedadasActivity extends AppCompatActivity {
     private SimpleDateFormat asdf;
     private String fechaconhora;
     private Integer TotalUsuarios;
-    private Integer UsuariosAsisten;
-    private Integer UsuariosNoAsisten;
     private Paint p = new Paint();
 
     private void readUser() {
@@ -91,6 +89,7 @@ public class ListaQuedadasActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         //consultamos el user
         Once.initialise(this);
         String tag = "ya registrado";
@@ -101,7 +100,7 @@ public class ListaQuedadasActivity extends AppCompatActivity {
         }
         setContentView(R.layout.activity_lista_quedadas);
         readUser();
-        //Toast.makeText(this, "Qué bien que hayas vuelto "+usuario.getUsername()+"!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Qué bien que hayas vuelto "+usuario.getUsername()+"!", Toast.LENGTH_SHORT).show();
 
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -137,18 +136,80 @@ public class ListaQuedadasActivity extends AppCompatActivity {
 
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-
                     int position = viewHolder.getAdapterPosition();
+                    ArrayList<Confirmacion> confirmacions = (ArrayList<Confirmacion>) quedadas.get(position).getConfirmaciones();
+                ArrayList<String> asisten = new ArrayList<>();
+                ArrayList<String > noAsisten = new ArrayList<>();
+                for(int i=0; i<confirmacions.size();i++){
+                    if(confirmacions.get(i).getConfirma()==0){ //no asisten
+                        noAsisten.add(confirmacions.get(i).getCodigo_usuario());
+                    }
+                    else if(confirmacions.get(i).getConfirma()==1){ //asisten
+                        asisten.add(confirmacions.get(i).getCodigo_usuario());
+                    }
+                }
 
                     if (direction == ItemTouchHelper.LEFT) {
-                        Toast.makeText(ListaQuedadasActivity.this, "Rechazado", Toast.LENGTH_SHORT).show();
+                        boolean ya_existe_user = false;
+                        //comprovem si l'usuari esta a la llista de si asisteixen
+                        for(int i=0; i<asisten.size();i++){
+                            if(asisten.get(i).equals(usuario.getUsername()))asisten.remove(i);//si estaba a l'altre llista l'eliminem
+                        }
+                        for(int i=0; i<noAsisten.size();i++){ //mirem si ja estava inclos aqui
+                            if(noAsisten.get(i).equals(usuario.getUsername())) ya_existe_user=true;
+                        }
+                        if(!ya_existe_user) noAsisten.add(usuario.getUsername()); //l'afegim
                         adapter.notifyDataSetChanged();
-                        //AÑADIR AQUI DECLINACIÓN EVENTO
+                        Toast.makeText(ListaQuedadasActivity.this, "Has confirmado que no asistirás a "+quedadas.get(position).getTitulo(), Toast.LENGTH_SHORT).show();
+                        ArrayList<Object> confirmaciones = new ArrayList<>();
+                        for(int i=0; i<asisten.size();i++){
+                            HashMap<String,Object> map = new HashMap<>();
+                            map.put("codigo_usuario",asisten.get(i));
+                            map.put("confirma",1L);
+                            confirmaciones.add(map);
+                        }
+                        for(int i=0; i<noAsisten.size();i++){
+                            HashMap<String,Object> map = new HashMap<>();
+                            map.put("codigo_usuario",noAsisten.get(i));
+                            map.put("confirma",0L);
+                            confirmaciones.add(map);
+                        }
+                        db.collection("Quedadas").document(quedadas.get(position).getIdentificador()).update("confirmaciones",confirmaciones);
+
                     } else {
-                        Toast.makeText(ListaQuedadasActivity.this, "Aceptado", Toast.LENGTH_SHORT).show();
+                        boolean ya_existe_user = false;
+                        //comprovem si l'usuari esta a la llista de no asisteixen
+                        for(int i=0; i<noAsisten.size();i++){
+                            if(noAsisten.get(i).equals(usuario.getUsername())) noAsisten.remove(i);//si estaba a l'altre llista l'eliminem
+                        }
+                        for(int i=0; i<asisten.size();i++){
+                            if(asisten.get(i).equals(usuario.getUsername())) ya_existe_user = true;
+                        }
+                        if(!ya_existe_user) asisten.add(usuario.getUsername()); //l'afegim a la llista correcta si no
+                        ArrayList<Object> confirmaciones = new ArrayList<>();
+                        for(int i=0; i<asisten.size();i++){
+                            HashMap<String,Object> map = new HashMap<>();
+                            map.put("codigo_usuario",asisten.get(i));
+                            map.put("confirma",1L);
+                            confirmaciones.add(map);
+                        }
+                        for(int i=0; i<noAsisten.size();i++){
+                            HashMap<String,Object> map = new HashMap<>();
+                            map.put("codigo_usuario",noAsisten.get(i));
+                            map.put("confirma",0L);
+                            confirmaciones.add(map);
+                        }
+                        db.collection("Quedadas").document(quedadas.get(position).getIdentificador()).update("confirmaciones",confirmaciones);
                         adapter.notifyDataSetChanged();
-                        //AÑADIR AQUI CONFIRMACIÓN EVENTO
+                        Toast.makeText(ListaQuedadasActivity.this, "Has confirmado que sí asistirás a "+quedadas.get(position).getTitulo(), Toast.LENGTH_SHORT).show();
+
                     }
+                db.collection("Usuarios").addSnapshotListener(ListaQuedadasActivity.this, new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
+                        TotalUsuarios = documentSnapshots.size();
+                    }
+                });
 
             }
             //Pinta el background al hacer el swipe
@@ -209,7 +270,6 @@ public class ListaQuedadasActivity extends AppCompatActivity {
                 TotalUsuarios = documentSnapshots.size();
             }
         });
-
         db.collection("Quedadas").orderBy("fechaconhora",Query.Direction.DESCENDING).addSnapshotListener(ListaQuedadasActivity.this, new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
@@ -378,8 +438,6 @@ public class ListaQuedadasActivity extends AppCompatActivity {
             intent.putExtra("identificador", quedadas.get(evento_position).getIdentificador());
             intent.putExtra("confirmaciones", (ArrayList<Confirmacion>) quedadas.get(evento_position).getConfirmaciones());
             startActivity(intent);
-
-
     }
 
     public void onLongClickItem(final int position){
@@ -398,7 +456,7 @@ public class ListaQuedadasActivity extends AppCompatActivity {
 
     private void removeitem(int position) {
         //pasarle el identificador del evento en la funcion
-         db.collection("Quedadas").document(quedadas.get(position).getIdentificador()).delete();
+        db.collection("Quedadas").document(quedadas.get(position).getIdentificador()).delete();
         adapter.notifyItemRemoved(position);
     }
 
@@ -426,6 +484,7 @@ public class ListaQuedadasActivity extends AppCompatActivity {
                 holder.fechaview.setText(fecha);
                 holder.horaview.setText(hora);
                 //actualització asistents i no
+
                 ArrayList<String> asisten = new ArrayList<>();
                 ArrayList<String> noAsisten = new ArrayList<>();
                 ArrayList<Confirmacion> lista = (ArrayList<Confirmacion>) model_item.getConfirmaciones();
