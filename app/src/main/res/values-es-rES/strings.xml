@@ -6,7 +6,7 @@
     <string name="hint_login">escribe aquí...</string>
     <string name="hint_title_event">Título de la quedada...</string>
     <string name="hint_description">Descripción</string>
-    <string name="hint_date">Data</string>
+    <string name="hint_date">Fecha</string>
     <string name="hint_hour">Hora</string>
     <string name="btn_create">Crear</string>
     <string name="hint_location">Ubicación</string>
