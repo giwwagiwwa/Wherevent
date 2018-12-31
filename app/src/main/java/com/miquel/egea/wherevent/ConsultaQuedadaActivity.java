@@ -7,12 +7,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 
 
@@ -175,14 +175,21 @@ public class ConsultaQuedadaActivity extends AppCompatActivity {
 
     @Override
     protected void onStop() {
-        ArrayList<Confirmacion> confirmaciones = new ArrayList<>();
+        ArrayList<Object> confirmaciones = new ArrayList<>();
         for(int i=0; i<asisten.size();i++){
-            confirmaciones.add(new Confirmacion(asisten.get(i),1L));
+            HashMap<String,Object> map = new HashMap<>();
+            map.put("codigo_usuario",asisten.get(i));
+            map.put("confirma",1L);
+            confirmaciones.add(map);
         }
         for(int i=0; i<noAsisten.size();i++){
-            confirmaciones.add(new Confirmacion(noAsisten.get(i),0L));
+            HashMap<String,Object> map = new HashMap<>();
+            map.put("codigo_usuario",noAsisten.get(i));
+            map.put("confirma",0L);
+            confirmaciones.add(map);
         }
-        //db.collection("Quedadas").document(identificador_quedada).update("confirmaciones", confirmaciones);
+        db.collection("Quedadas").document(identificador_quedada).update("confirmaciones",confirmaciones);
+
         super.onStop();
     }
 }

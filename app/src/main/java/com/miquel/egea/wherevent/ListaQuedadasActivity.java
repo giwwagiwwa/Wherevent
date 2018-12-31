@@ -101,7 +101,7 @@ public class ListaQuedadasActivity extends AppCompatActivity {
         }
         setContentView(R.layout.activity_lista_quedadas);
         readUser();
-        Toast.makeText(this, "Qué bien que hayas vuelto "+usuario.getUsername()+"!", Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, "Qué bien que hayas vuelto "+usuario.getUsername()+"!", Toast.LENGTH_SHORT).show();
 
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -123,7 +123,6 @@ public class ListaQuedadasActivity extends AppCompatActivity {
         adapter = new Adapter();
         item_list.setAdapter(adapter);
         item_list.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-
         enableSwipe();
     }
     //Permite deslizar "swipe" las tarjetas de la lista quedadas
