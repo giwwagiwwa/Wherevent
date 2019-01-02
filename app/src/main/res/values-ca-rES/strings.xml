@@ -12,4 +12,5 @@
     <string name="hint_description">Descripció</string>
     <string name="hint_date">Data</string>
     <string name="the_bad_one">\"El que sempre es raja\"</string>
+    <string name="title_cofirmation_list">Llista de Confirmació</string>
 </resources>

@@ -14,4 +14,5 @@
     <string name="ranking" translatable="false">Ranking</string>
     <string name="the_good_one">\"The one that is always present\"</string>
     <string name="the_bad_one">\"The one that is always missing\"</string>
+    <string name="title_cofirmation_list">Confirmation List</string>
 </resources>

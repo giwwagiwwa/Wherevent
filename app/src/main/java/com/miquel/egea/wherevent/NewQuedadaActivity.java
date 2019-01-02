@@ -38,7 +38,7 @@ public class NewQuedadaActivity extends AppCompatActivity {
     Long tipoevento;
     private DatePickerDialog.OnDateSetListener fechaeditListener;
     private TimePickerDialog.OnTimeSetListener horaeditListener;
-    private static int iconos[] = { R.drawable.bbq, R.drawable.bolos, R.drawable.camping, R.drawable.cena, R.drawable.cine, R.drawable.copa,
+    private static int iconos[] = {R.drawable.bbq, R.drawable.bolos, R.drawable.camping, R.drawable.cena, R.drawable.cine, R.drawable.copa,
             R.drawable.estudio,R.drawable.globos, R.drawable.gym, R.drawable.pastel, R.drawable.playa, R.drawable.regalo,
             R.drawable.viaje};
     private static int iconowherevent = R.drawable.wherevent;

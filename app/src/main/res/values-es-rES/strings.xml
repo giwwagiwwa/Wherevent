@@ -12,4 +12,5 @@
     <string name="hint_location">Ubicación</string>
     <string name="the_good_one">\"El que nunca falla\"</string>
     <string name="the_bad_one">\"El que siempre se raja\"</string>
+    <string name="title_cofirmation_list">Lista de Confirmación</string>
 </resources>
