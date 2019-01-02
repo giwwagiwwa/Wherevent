@@ -128,99 +128,110 @@ public class ListaQuedadasActivity extends AppCompatActivity {
         adapter = new Adapter();
         item_list.setAdapter(adapter);
         item_list.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        enableSwipe();
 
-        /*
-        if (quedadas.get(item_list.getChildAdapterPosition(item_list)).getFechaconhora().after((Calendar.getInstance().getTime()))) {
-            enableSwipe();
-        }*/
     }
     //Permite deslizar "swipe" las tarjetas de la lista quedadas
     public void enableSwipe() {
-
         ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
             @Override
-
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
                 return false;
             }
-
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                    int position = viewHolder.getAdapterPosition();
+                int position = viewHolder.getAdapterPosition();
+                if (quedadas.get(position).getFechaconhora().before(Calendar.getInstance().getTime())) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(ListaQuedadasActivity.this);
+                    builder.setMessage("No se puede confirmar la asistencia en un evento ya finalizado.");
+                    builder.setNeutralButton("Aceptar", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    });
+                    builder.create().show();
+                    adapter.notifyDataSetChanged();
+
+                } else {
                     ArrayList<Confirmacion> confirmacions = (ArrayList<Confirmacion>) quedadas.get(position).getConfirmaciones();
-                ArrayList<String> asisten = new ArrayList<>();
-                ArrayList<String > noAsisten = new ArrayList<>();
-                for(int i=0; i<confirmacions.size();i++){
-                    if(confirmacions.get(i).getConfirma()==0){ //no asisten
-                        noAsisten.add(confirmacions.get(i).getCodigo_usuario());
+                    ArrayList<String> asisten = new ArrayList<>();
+                    ArrayList<String> noAsisten = new ArrayList<>();
+                    for (int i = 0; i < confirmacions.size(); i++) {
+                        if (confirmacions.get(i).getConfirma() == 0) { //no asisten
+                            noAsisten.add(confirmacions.get(i).getCodigo_usuario());
+                        } else if (confirmacions.get(i).getConfirma() == 1) { //asisten
+                            asisten.add(confirmacions.get(i).getCodigo_usuario());
+                        }
                     }
-                    else if(confirmacions.get(i).getConfirma()==1){ //asisten
-                        asisten.add(confirmacions.get(i).getCodigo_usuario());
-                    }
-                }
 
                     if (direction == ItemTouchHelper.LEFT) {
                         boolean ya_existe_user = false;
                         //comprovem si l'usuari esta a la llista de si asisteixen
-                        for(int i=0; i<asisten.size();i++){
-                            if(asisten.get(i).equals(usuario.getUsername()))asisten.remove(i);//si estaba a l'altre llista l'eliminem
+                        for (int i = 0; i < asisten.size(); i++) {
+                            if (asisten.get(i).equals(usuario.getUsername()))
+                                asisten.remove(i);//si estaba a l'altre llista l'eliminem
                         }
-                        for(int i=0; i<noAsisten.size();i++){ //mirem si ja estava inclos aqui
-                            if(noAsisten.get(i).equals(usuario.getUsername())) ya_existe_user=true;
+                        for (int i = 0; i < noAsisten.size(); i++) { //mirem si ja estava inclos aqui
+                            if (noAsisten.get(i).equals(usuario.getUsername()))
+                                ya_existe_user = true;
                         }
-                        if(!ya_existe_user) noAsisten.add(usuario.getUsername()); //l'afegim
+                        if (!ya_existe_user) noAsisten.add(usuario.getUsername()); //l'afegim
                         adapter.notifyDataSetChanged();
-                        Toast.makeText(ListaQuedadasActivity.this, "Has confirmado que no asistirás a "+quedadas.get(position).getTitulo(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ListaQuedadasActivity.this, "Has confirmado que no asistirás a " + quedadas.get(position).getTitulo(), Toast.LENGTH_SHORT).show();
                         ArrayList<Object> confirmaciones = new ArrayList<>();
-                        for(int i=0; i<asisten.size();i++){
-                            HashMap<String,Object> map = new HashMap<>();
-                            map.put("codigo_usuario",asisten.get(i));
-                            map.put("confirma",1L);
+                        for (int i = 0; i < asisten.size(); i++) {
+                            HashMap<String, Object> map = new HashMap<>();
+                            map.put("codigo_usuario", asisten.get(i));
+                            map.put("confirma", 1L);
                             confirmaciones.add(map);
                         }
-                        for(int i=0; i<noAsisten.size();i++){
-                            HashMap<String,Object> map = new HashMap<>();
-                            map.put("codigo_usuario",noAsisten.get(i));
-                            map.put("confirma",0L);
+                        for (int i = 0; i < noAsisten.size(); i++) {
+                            HashMap<String, Object> map = new HashMap<>();
+                            map.put("codigo_usuario", noAsisten.get(i));
+                            map.put("confirma", 0L);
                             confirmaciones.add(map);
                         }
-                        db.collection("Quedadas").document(quedadas.get(position).getIdentificador()).update("confirmaciones",confirmaciones);
+                        db.collection("Quedadas").document(quedadas.get(position).getIdentificador()).update("confirmaciones", confirmaciones);
 
                     } else {
                         boolean ya_existe_user = false;
                         //comprovem si l'usuari esta a la llista de no asisteixen
-                        for(int i=0; i<noAsisten.size();i++){
-                            if(noAsisten.get(i).equals(usuario.getUsername())) noAsisten.remove(i);//si estaba a l'altre llista l'eliminem
+                        for (int i = 0; i < noAsisten.size(); i++) {
+                            if (noAsisten.get(i).equals(usuario.getUsername()))
+                                noAsisten.remove(i);//si estaba a l'altre llista l'eliminem
                         }
-                        for(int i=0; i<asisten.size();i++){
-                            if(asisten.get(i).equals(usuario.getUsername())) ya_existe_user = true;
+                        for (int i = 0; i < asisten.size(); i++) {
+                            if (asisten.get(i).equals(usuario.getUsername())) ya_existe_user = true;
                         }
-                        if(!ya_existe_user) asisten.add(usuario.getUsername()); //l'afegim a la llista correcta si no
+                        if (!ya_existe_user)
+                            asisten.add(usuario.getUsername()); //l'afegim a la llista correcta si no
                         ArrayList<Object> confirmaciones = new ArrayList<>();
-                        for(int i=0; i<asisten.size();i++){
-                            HashMap<String,Object> map = new HashMap<>();
-                            map.put("codigo_usuario",asisten.get(i));
-                            map.put("confirma",1L);
+                        for (int i = 0; i < asisten.size(); i++) {
+                            HashMap<String, Object> map = new HashMap<>();
+                            map.put("codigo_usuario", asisten.get(i));
+                            map.put("confirma", 1L);
                             confirmaciones.add(map);
                         }
-                        for(int i=0; i<noAsisten.size();i++){
-                            HashMap<String,Object> map = new HashMap<>();
-                            map.put("codigo_usuario",noAsisten.get(i));
-                            map.put("confirma",0L);
+                        for (int i = 0; i < noAsisten.size(); i++) {
+                            HashMap<String, Object> map = new HashMap<>();
+                            map.put("codigo_usuario", noAsisten.get(i));
+                            map.put("confirma", 0L);
                             confirmaciones.add(map);
                         }
-                        db.collection("Quedadas").document(quedadas.get(position).getIdentificador()).update("confirmaciones",confirmaciones);
+                        db.collection("Quedadas").document(quedadas.get(position).getIdentificador()).update("confirmaciones", confirmaciones);
                         adapter.notifyDataSetChanged();
-                        Toast.makeText(ListaQuedadasActivity.this, "Has confirmado que sí asistirás a "+quedadas.get(position).getTitulo(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ListaQuedadasActivity.this, "Has confirmado que sí asistirás a " + quedadas.get(position).getTitulo(), Toast.LENGTH_SHORT).show();
 
                     }
-                db.collection("Usuarios").addSnapshotListener(ListaQuedadasActivity.this, new EventListener<QuerySnapshot>() {
-                    @Override
-                    public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
-                        TotalUsuarios = documentSnapshots.size();
-                    }
-                });
+                    db.collection("Usuarios").addSnapshotListener(ListaQuedadasActivity.this, new EventListener<QuerySnapshot>() {
+                        @Override
+                        public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
+                            TotalUsuarios = documentSnapshots.size();
+                        }
+                    });
 
+                }
             }
             //Pinta el background al hacer el swipe
            @Override
