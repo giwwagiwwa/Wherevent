@@ -224,12 +224,6 @@ public class ListaQuedadasActivity extends AppCompatActivity {
                         Toast.makeText(ListaQuedadasActivity.this, "Has confirmado que sí asistirás a " + quedadas.get(position).getTitulo(), Toast.LENGTH_SHORT).show();
 
                     }
-                    db.collection("Usuarios").addSnapshotListener(ListaQuedadasActivity.this, new EventListener<QuerySnapshot>() {
-                        @Override
-                        public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
-                            TotalUsuarios = documentSnapshots.size();
-                        }
-                    });
 
                 }
             }
@@ -492,6 +486,13 @@ public class ListaQuedadasActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+
+            db.collection("Usuarios").addSnapshotListener(ListaQuedadasActivity.this, new EventListener<QuerySnapshot>() {
+                @Override
+                public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
+                    TotalUsuarios = documentSnapshots.size();
+                }
+            });
             Quedada model_item = quedadas.get(position);
             //convertimos la hora de Date a String
             Date fechaconhorad = model_item.getFechaconhora();
@@ -524,9 +525,9 @@ public class ListaQuedadasActivity extends AppCompatActivity {
                 holder.asistenview.setText(asist.toString());
                 holder.noasistenview.setText(noasist.toString());
 
-                TotalUsuarios=TotalUsuarios-asist-noasist;
-                if(TotalUsuarios==null) holder.nocontestanview.setText("0");
-                else holder.nocontestanview.setText(TotalUsuarios.toString());
+                Integer nocontestan = TotalUsuarios-asist-noasist;
+                if(nocontestan==null | nocontestan<0) holder.nocontestanview.setText("0");
+                else holder.nocontestanview.setText(nocontestan.toString());
                 //******************
 
                 if (fechaconhorad.before(Calendar.getInstance().getTime())){
