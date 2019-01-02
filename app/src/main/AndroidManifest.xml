@@ -24,7 +24,8 @@
             android:name=".LoginActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".ConsultaQuedadaActivity" />
-        <activity android:name=".RankingActivity"></activity>
+        <activity android:name=".RankingActivity" />
+        <activity android:name=".ValorarAsistenciaActivity"></activity>
     </application>
 
 </manifest>

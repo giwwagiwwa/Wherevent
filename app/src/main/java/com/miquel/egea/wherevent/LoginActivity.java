@@ -14,7 +14,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import jonathanfinerty.once.Once;
+
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -24,8 +24,8 @@ public class LoginActivity extends AppCompatActivity {
 
     private void saveUser() {
         try {
-            FileOutputStream outputStream = openFileOutput("user.txt", MODE_PRIVATE);
-            String line = String.format("%s;%b\n", usuario.getUsername(), usuario.getUsercode());
+            FileOutputStream outputStream = openFileOutput("usuario.txt", MODE_APPEND);
+            String line = String.format("%s;%b;%s\n", usuario.getUsername(), usuario.getUsercode(),usuario.getRango());
             outputStream.write(line.getBytes());
 
         } catch (FileNotFoundException e) {
@@ -44,7 +44,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public void onClickCrear(View view) {
         String username = usernameedit.getText().toString();
-        usuario = new Usuario(username, "");
+        usuario = new Usuario(username, "",0);
         saveUser();
         db.collection("Usuarios").add(usuario);
         setResult(RESULT_OK);

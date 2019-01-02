@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 import java.io.FileInputStream;
@@ -18,6 +19,7 @@ import java.util.Scanner;
 
 
 public class ConsultaQuedadaActivity extends AppCompatActivity {
+    public static final int VALORACION_OK = 0;
     private TextView tituloview;
     private TextView descripcionview;
     private TextView fechaview;
@@ -52,12 +54,12 @@ public class ConsultaQuedadaActivity extends AppCompatActivity {
 
     private void readUser() {
         try {
-            FileInputStream inputStream = openFileInput("user.txt");
+            FileInputStream inputStream = openFileInput("usuario.txt");
             Scanner scanner = new Scanner(inputStream);
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
                 String[] parts = line.split(";");
-                usuario = new Usuario(parts[0], "");
+                usuario = new Usuario(parts[0], parts[1], Integer.valueOf(parts[2]));
             }
         } catch (FileNotFoundException e) {
             Log.e("User", "No he podido abrir el fichero");
@@ -94,8 +96,7 @@ public class ConsultaQuedadaActivity extends AppCompatActivity {
             ubicacion = data.getStringExtra("ubicacion");
             ubicacionview.setText(ubicacion);
             descripcion = data.getStringExtra("descripción");
-            if(descripcion.equals("")) descripcionview.setText("Sin descripción");
-            else descripcionview.setText(descripcion);
+            descripcionview.setText(descripcion);
             hora = data.getStringExtra("hora");
             horaview.setText(hora);
             fecha = data.getStringExtra("fecha");
@@ -117,13 +118,14 @@ public class ConsultaQuedadaActivity extends AppCompatActivity {
             asisten = new ArrayList<>();
             noAsisten = new ArrayList<>();
             for(int i=0; i<confirmacions.size();i++){
-                if(confirmacions.get(i).getConfirma()==0){ //no asisten
-                    noAsisten.add(confirmacions.get(i).getCodigo_usuario());
-                }
-                else if(confirmacions.get(i).getConfirma()==1){ //asisten
-                    asisten.add(confirmacions.get(i).getCodigo_usuario());
-                }
+                    if(confirmacions.get(i).getConfirma()==0){ //no asisten
+                        noAsisten.add(confirmacions.get(i).getCodigo_usuario());
+                    }
+                    else if(confirmacions.get(i).getConfirma()==1){ //asisten
+                        asisten.add(confirmacions.get(i).getCodigo_usuario());
+                    }
             }
+
             ActualizarDatos();
         }
         //comprobamos si la fecha es más reciente
@@ -212,6 +214,14 @@ public class ConsultaQuedadaActivity extends AppCompatActivity {
 
     public void onClickValorar(View view) {
         //llamar a la actividad de valorar y mandar retorno para ocultar el botón!!
+        Intent intent = new Intent(this, ValorarAsistenciaActivity.class);
+        intent.putExtra("asistentes", asisten);
+        startActivity(intent);
+    }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

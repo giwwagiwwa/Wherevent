@@ -73,12 +73,12 @@ public class ListaQuedadasActivity extends AppCompatActivity {
 
     private void readUser() {
         try {
-            FileInputStream inputStream = openFileInput("user.txt");
+            FileInputStream inputStream = openFileInput("usuario.txt");
             Scanner scanner = new Scanner(inputStream);
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
                 String[] parts = line.split(";");
-                usuario = new Usuario(parts[0], parts[1]);
+                usuario = new Usuario(parts[0],parts[1],Integer.valueOf(parts[2]));
             }
         } catch (FileNotFoundException e) {
             Log.e("User", "No he podido abrir el fichero");
@@ -89,7 +89,6 @@ public class ListaQuedadasActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         //consultamos el user
         Once.initialise(this);
         String tag = "ya registrado";
@@ -98,8 +97,9 @@ public class ListaQuedadasActivity extends AppCompatActivity {
             Intent intent = new Intent(this, LoginActivity.class);
             startActivityForResult(intent, NUEVOUSUARIO);
         }
+        else readUser();
         setContentView(R.layout.activity_lista_quedadas);
-        readUser();
+
 
         try {
             Toast.makeText(this, "Qué bien que hayas vuelto "+usuario.getUsername()+"!", Toast.LENGTH_SHORT).show();

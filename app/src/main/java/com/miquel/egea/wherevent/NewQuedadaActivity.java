@@ -56,12 +56,12 @@ public class NewQuedadaActivity extends AppCompatActivity {
 
     private void readUser() {
         try {
-            FileInputStream inputStream = openFileInput("user.txt");
+            FileInputStream inputStream = openFileInput("usuario.txt");
             Scanner scanner = new Scanner(inputStream);
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
                 String[] parts = line.split(";");
-                usuario = new Usuario(parts[0], "");
+                usuario = new Usuario(parts[0], parts[1], Integer.valueOf(parts[2]));
             }
         } catch (FileNotFoundException e) {
             Log.e("User", "No he podido abrir el fichero");
