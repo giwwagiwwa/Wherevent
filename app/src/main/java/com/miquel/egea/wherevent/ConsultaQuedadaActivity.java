@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -80,7 +81,10 @@ public class ConsultaQuedadaActivity extends AppCompatActivity {
         noasistenview = findViewById(R.id.noasistenview);
         textaceptar = findViewById(R.id.textaceptar);
         textrechazar = findViewById(R.id.textrechazar);
-
+        Button valorar = findViewById(R.id.btn_valorar);
+        Button aceptar = findViewById(R.id.aceptar_btn);
+        Button declinar = findViewById(R.id.declinar_btn);
+        boolean finalizado = false;
 
         Intent data = getIntent();
         if (data!=null){
@@ -90,13 +94,15 @@ public class ConsultaQuedadaActivity extends AppCompatActivity {
             ubicacion = data.getStringExtra("ubicacion");
             ubicacionview.setText(ubicacion);
             descripcion = data.getStringExtra("descripción");
-            descripcionview.setText(descripcion);
+            if(descripcion.equals("")) descripcionview.setText("Sin descripción");
+            else descripcionview.setText(descripcion);
             hora = data.getStringExtra("hora");
             horaview.setText(hora);
             fecha = data.getStringExtra("fecha");
             fechaview.setText(fecha);
             autor = data.getStringExtra("autor");
             autorview.setText(autor);
+            finalizado = data.getBooleanExtra("finalizado",false);
 
             tipoevento = data.getLongExtra("tipoevento",-1);
             //comprobamos si ha clicado en un icono
@@ -120,7 +126,18 @@ public class ConsultaQuedadaActivity extends AppCompatActivity {
             }
             ActualizarDatos();
         }
-
+        //comprobamos si la fecha es más reciente
+        if(!finalizado){
+            //comprobamos si eres el creador
+            if(autor.equals(usuario.getUsername())) {
+                valorar.setVisibility(View.VISIBLE);
+            }
+            else valorar.setVisibility(View.INVISIBLE);
+            //si esta finalizado igualmente ocultamos los botones de votar
+            aceptar.setVisibility(View.INVISIBLE);
+            declinar.setVisibility(View.INVISIBLE);
+        }
+        else valorar.setVisibility(View.INVISIBLE);
 
     }
 
@@ -191,5 +208,10 @@ public class ConsultaQuedadaActivity extends AppCompatActivity {
         db.collection("Quedadas").document(identificador_quedada).update("confirmaciones",confirmaciones);
 
         super.onStop();
+    }
+
+    public void onClickValorar(View view) {
+        //llamar a la actividad de valorar y mandar retorno para ocultar el botón!!
+
     }
 }

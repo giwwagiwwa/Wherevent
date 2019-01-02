@@ -434,9 +434,12 @@ public class ListaQuedadasActivity extends AppCompatActivity {
     }
 
     private void onClickEvento(int evento_position) {
+        //marcador quedada finalizada
+        boolean finalizado = false;
         Intent intent = new Intent(this, ConsultaQuedadaActivity.class);
         Date fechaconhorad = quedadas.get(evento_position).getFechaconhora();
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+        if(fechaconhorad.after(Calendar.getInstance().getTime()))finalizado = true;
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
             String fechaconhora = sdf.format(fechaconhorad);
             //separamos fecha y hora
             String[] fechayhora = fechaconhora.split(" ");
@@ -452,6 +455,7 @@ public class ListaQuedadasActivity extends AppCompatActivity {
             intent.putExtra("autor", quedadas.get(evento_position).getAutor());
             intent.putExtra("identificador", quedadas.get(evento_position).getIdentificador());
             intent.putExtra("confirmaciones", (ArrayList<Confirmacion>) quedadas.get(evento_position).getConfirmaciones());
+            intent.putExtra("finalizado",finalizado);
             startActivity(intent);
     }
 
@@ -528,7 +532,6 @@ public class ListaQuedadasActivity extends AppCompatActivity {
                 Integer nocontestan = TotalUsuarios-asist-noasist;
                 if(nocontestan==null | nocontestan<0) holder.nocontestanview.setText("0");
                 else holder.nocontestanview.setText(nocontestan.toString());
-                //******************
 
                 if (fechaconhorad.before(Calendar.getInstance().getTime())){
                     holder.eventopasadoview.setVisibility(View.VISIBLE);
