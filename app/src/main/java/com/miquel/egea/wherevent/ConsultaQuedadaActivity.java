@@ -55,6 +55,8 @@ public class ConsultaQuedadaActivity extends AppCompatActivity {
     private String fecha;
     private String autor;
     private Long tipoevento;
+    private Long rango;
+    private String usercode;
 
 
     private void readUser() {
@@ -236,13 +238,13 @@ public class ConsultaQuedadaActivity extends AppCompatActivity {
                     public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
                         for(DocumentSnapshot doc : documentSnapshots){
                             if(doc.getString("username").equals(final_si_asisten.get(j))){
-                                String usercode = doc.getString("usercode");
-                                Long rango = doc.getLong("rango");
-                                rango = rango+5L;
-                                db.collection("Usuarios").document(usercode).update("rango",rango);
+                                usercode = doc.getString("usercode");
+                                rango = doc.getLong("rango");
                                 break;
                             }
                         }
+                        rango = rango+5L;
+                        db.collection("Usuarios").document(usercode).update("rango",rango);
                     }
                 });
             }
@@ -253,13 +255,12 @@ public class ConsultaQuedadaActivity extends AppCompatActivity {
                     public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
                         for(DocumentSnapshot doc : documentSnapshots){
                             if(doc.getString("username").equals(final_no_asisten.get(j))){
-                                String usercode = doc.getString("usercode");
-                                Long rango = doc.getLong("rango");
-                                rango = rango-5L;
-                                db.collection("Usuarios").document(usercode).update("rango",rango);
-
+                                usercode = doc.getString("usercode");
+                                rango = doc.getLong("rango");
                             }
                         }
+                        rango = rango-5L;
+                        db.collection("Usuarios").document(usercode).update("rango",rango);
                     }
                 });
             }
