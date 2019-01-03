@@ -243,10 +243,11 @@ public class ConsultaQuedadaActivity extends AppCompatActivity {
                                 break;
                             }
                         }
-                        rango = rango+5L;
-                        db.collection("Usuarios").document(usercode).update("rango",rango);
                     }
+
                 });
+                rango = rango+5L;
+                db.collection("Usuarios").document(usercode).update("rango",rango);
             }
             for(int i=0; i<final_no_asisten.size();i++){
                 final int j = i;
@@ -259,10 +260,11 @@ public class ConsultaQuedadaActivity extends AppCompatActivity {
                                 rango = doc.getLong("rango");
                             }
                         }
-                        rango = rango-5L;
-                        db.collection("Usuarios").document(usercode).update("rango",rango);
+
                     }
                 });
+                rango = rango-5L;
+                db.collection("Usuarios").document(usercode).update("rango",rango);
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
