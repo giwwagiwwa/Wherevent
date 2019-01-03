@@ -44,7 +44,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public void onClickCrear(View view) {
         String username = usernameedit.getText().toString();
-        usuario = new Usuario(username, "",0);
+        usuario = new Usuario(username, "",0L);
         saveUser();
         db.collection("Usuarios").add(usuario);
         setResult(RESULT_OK);

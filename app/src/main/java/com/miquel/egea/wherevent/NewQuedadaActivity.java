@@ -61,7 +61,7 @@ public class NewQuedadaActivity extends AppCompatActivity {
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
                 String[] parts = line.split(";");
-                usuario = new Usuario(parts[0], parts[1], Integer.valueOf(parts[2]));
+                usuario = new Usuario(parts[0], parts[1], Long.getLong(parts[2]));
             }
         } catch (FileNotFoundException e) {
             Log.e("User", "No he podido abrir el fichero");

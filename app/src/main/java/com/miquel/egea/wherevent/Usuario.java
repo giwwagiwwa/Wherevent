@@ -1,14 +1,14 @@
 package com.miquel.egea.wherevent;
 
-public class Usuario {
-    private String username, usercode;
-    Integer rango;
+class Usuario {
+    String username, usercode;
+    Long rango;
 
-    public Integer getRango() {
+    public Long getRango() {
         return rango;
     }
 
-    public void setRango(Integer rango) {
+    public void setRango(Long rango) {
         this.rango = rango;
     }
 
@@ -28,7 +28,7 @@ public class Usuario {
         this.usercode = usercode;
     }
 
-    public Usuario(String username, String usercode, Integer rango) {
+    public Usuario(String username, String usercode, Long rango) {
         this.rango = rango;
         this.username = username;
         this.usercode = usercode;

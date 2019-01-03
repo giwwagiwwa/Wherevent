@@ -78,7 +78,7 @@ public class ListaQuedadasActivity extends AppCompatActivity {
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
                 String[] parts = line.split(";");
-                usuario = new Usuario(parts[0],parts[1],Integer.valueOf(parts[2]));
+                usuario = new Usuario(parts[0],parts[1],Long.getLong(parts[2]));
             }
         } catch (FileNotFoundException e) {
             Log.e("User", "No he podido abrir el fichero");
@@ -88,7 +88,6 @@ public class ListaQuedadasActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         //consultamos el user
         Once.initialise(this);
         String tag = "ya registrado";
@@ -97,14 +96,17 @@ public class ListaQuedadasActivity extends AppCompatActivity {
             Intent intent = new Intent(this, LoginActivity.class);
             startActivityForResult(intent, NUEVOUSUARIO);
         }
-        else readUser();
+
+        super.onCreate(savedInstanceState);
+        readUser();
         setContentView(R.layout.activity_lista_quedadas);
 
 
         try {
             Toast.makeText(this, "Qué bien que hayas vuelto "+usuario.getUsername()+"!", Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
-            Toast.makeText(this, "No se ha podido cargar el nombre de usuario", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivityForResult(intent, NUEVOUSUARIO);
         }
 
 
@@ -283,6 +285,11 @@ public class ListaQuedadasActivity extends AppCompatActivity {
             @Override
             public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
                 TotalUsuarios = documentSnapshots.size();
+                for(DocumentSnapshot doc : documentSnapshots){
+                    String id = doc.getId();
+                    db.collection("Usuarios").document(id).update("usercode", id);
+                }
+
             }
         });
         db.collection("Quedadas").orderBy("fechaconhora",Query.Direction.DESCENDING).addSnapshotListener(ListaQuedadasActivity.this, new EventListener<QuerySnapshot>() {

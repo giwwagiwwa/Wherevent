@@ -1,13 +1,8 @@
 package com.miquel.egea.wherevent;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-import android.support.annotation.NonNull;
-
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.Map;
-import java.util.Set;
+
 
 class Confirmacion implements Serializable {
 

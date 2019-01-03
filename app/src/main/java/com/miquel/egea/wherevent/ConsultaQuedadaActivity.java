@@ -10,7 +10,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -59,7 +64,7 @@ public class ConsultaQuedadaActivity extends AppCompatActivity {
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
                 String[] parts = line.split(";");
-                usuario = new Usuario(parts[0], parts[1], Integer.valueOf(parts[2]));
+                usuario = new Usuario(parts[0], parts[1], Long.getLong(parts[2]));
             }
         } catch (FileNotFoundException e) {
             Log.e("User", "No he podido abrir el fichero");
@@ -216,12 +221,49 @@ public class ConsultaQuedadaActivity extends AppCompatActivity {
         //llamar a la actividad de valorar y mandar retorno para ocultar el botón!!
         Intent intent = new Intent(this, ValorarAsistenciaActivity.class);
         intent.putExtra("asistentes", asisten);
-        startActivity(intent);
+        startActivityForResult(intent,VALORACION_OK);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode==RESULT_OK){
+            final ArrayList<String> final_si_asisten = data.getStringArrayListExtra("final_si_asisten");
+            final ArrayList<String> final_no_asisten = data.getStringArrayListExtra("final_no_asisten");
+            for(int i = 0; i<final_si_asisten.size(); i++){
+                final int j = i;
+                db.collection("Usuarios").addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
+                        for(DocumentSnapshot doc : documentSnapshots){
+                            if(doc.getString("username").equals(final_si_asisten.get(j))){
+                                String usercode = doc.getString("usercode");
+                                Long rango = doc.getLong("rango");
+                                rango = rango+5L;
+                                db.collection("Usuarios").document(usercode).update("rango",rango);
+                                break;
+                            }
+                        }
+                    }
+                });
+            }
+            for(int i=0; i<final_no_asisten.size();i++){
+                final int j = i;
+                db.collection("Usuarios").addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
+                        for(DocumentSnapshot doc : documentSnapshots){
+                            if(doc.getString("username").equals(final_no_asisten.get(j))){
+                                String usercode = doc.getString("usercode");
+                                Long rango = doc.getLong("rango");
+                                rango = rango-5L;
+                                db.collection("Usuarios").document(usercode).update("rango",rango);
 
+                            }
+                        }
+                    }
+                });
+            }
+        }
         super.onActivityResult(requestCode, resultCode, data);
     }
 }
