@@ -92,17 +92,10 @@ public class ListaQuedadasActivity extends AppCompatActivity {
         if(isFirstRun){
             Intent intent = new Intent(this, LoginActivity.class);
             startActivityForResult(intent, NUEVOUSUARIO);
-        } readUser();
+        }
+        readUser();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lista_quedadas);
-
-        try {
-            Toast.makeText(this, "Qué bien que hayas vuelto "+usuario.getUsername()+"!", Toast.LENGTH_SHORT).show();
-        } catch (Exception e) {
-            Intent intent = new Intent(this, LoginActivity.class);
-            startActivityForResult(intent, NUEVOUSUARIO);
-        }
-
 
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -117,7 +110,7 @@ public class ListaQuedadasActivity extends AppCompatActivity {
         });
 
         quedadas = new ArrayList<>();
-
+        if(!isFirstRun) Toast.makeText(this, "Qué bien que hayas vuelto "+usuario.getUsername()+"!", Toast.LENGTH_SHORT).show();
         //layout y adaptador RecyclerView
         item_list = findViewById(R.id.item_list);
         item_list.setLayoutManager(new LinearLayoutManager(this));
