@@ -10,6 +10,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 public class RankingActivity extends AppCompatActivity {
@@ -33,20 +34,22 @@ public class RankingActivity extends AppCompatActivity {
         texto2 = "";
 
 
-        db.collection("Usuarios").addSnapshotListener(RankingActivity.this, new EventListener<QuerySnapshot>() {
+        db.collection("Usuarios").orderBy("rango",Query.Direction.DESCENDING).addSnapshotListener(RankingActivity.this, new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
+                int cont = 1;
                 for (DocumentSnapshot doc : documentSnapshots) {
                     Usuario usuario = new Usuario(doc.getString("username"), doc.getString("usercode"), doc.getLong("rango"));
-                    texto1 = texto1 + "  " +  usuario.getUsername()+"\n\n";
+                    texto1 = texto1 + cont + ".  " + usuario.getUsername() +"\n\n";
                     texto2 = texto2 + "  " + usuario.getRango()+"\n\n";
                     nombre_view.setText(texto1);
                     rangos_view.setText(texto2);
+                    cont++;
                     if(usuario.getRango()>maxrango){
-                        maxrango=usuario.getRango();
+                        maxrango = usuario.getRango();
                         maxuser = usuario.getUsername();
                     }
-                    else if(usuario.getRango()<=minrango){
+                    else if(usuario.getRango()<minrango){
                         minrango=usuario.getRango();
                         minuser=usuario.getUsername();
                     }
@@ -61,5 +64,6 @@ public class RankingActivity extends AppCompatActivity {
 
 
     }
+
 
 }

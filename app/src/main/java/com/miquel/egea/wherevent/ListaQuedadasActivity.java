@@ -51,8 +51,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Scanner;
 
-import jonathanfinerty.once.Once;
-
 public class ListaQuedadasActivity extends AppCompatActivity {
 
     private static final int NUEVA_QUEDADA = 0;
@@ -88,19 +86,15 @@ public class ListaQuedadasActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Boolean isFirstRun = getSharedPreferences("PREFERENCE", MODE_PRIVATE)
+                .getBoolean("isFirstRun", true);
         //consultamos el user
-        Once.initialise(this);
-        String tag = "ya registrado";
-        if (!Once.beenDone(Once.THIS_APP_INSTALL, tag)) {
-            Once.markDone(tag);
+        if(isFirstRun){
             Intent intent = new Intent(this, LoginActivity.class);
             startActivityForResult(intent, NUEVOUSUARIO);
-        }
-
+        } readUser();
         super.onCreate(savedInstanceState);
-        readUser();
         setContentView(R.layout.activity_lista_quedadas);
-
 
         try {
             Toast.makeText(this, "Qué bien que hayas vuelto "+usuario.getUsername()+"!", Toast.LENGTH_SHORT).show();

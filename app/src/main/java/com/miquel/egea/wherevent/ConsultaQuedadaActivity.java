@@ -20,6 +20,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Scanner;
 
 
@@ -55,8 +56,9 @@ public class ConsultaQuedadaActivity extends AppCompatActivity {
     private String fecha;
     private String autor;
     private Long tipoevento;
-    private Long rango;
-    private String usercode;
+    private Button valorar;
+    private Button aceptar;
+    private Button declinar;
 
 
     private void readUser() {
@@ -90,9 +92,9 @@ public class ConsultaQuedadaActivity extends AppCompatActivity {
         noasistenview = findViewById(R.id.noasistenview);
         textaceptar = findViewById(R.id.textaceptar);
         textrechazar = findViewById(R.id.textrechazar);
-        Button valorar = findViewById(R.id.btn_valorar);
-        Button aceptar = findViewById(R.id.aceptar_btn);
-        Button declinar = findViewById(R.id.declinar_btn);
+        valorar = findViewById(R.id.btn_valorar);
+        aceptar = findViewById(R.id.aceptar_btn);
+        declinar = findViewById(R.id.declinar_btn);
         boolean finalizado = false;
 
         Intent data = getIntent();
@@ -215,57 +217,41 @@ public class ConsultaQuedadaActivity extends AppCompatActivity {
             confirmaciones.add(map);
         }
         db.collection("Quedadas").document(identificador_quedada).update("confirmaciones",confirmaciones);
-
         super.onStop();
     }
 
     public void onClickValorar(View view) {
-        //llamar a la actividad de valorar y mandar retorno para ocultar el botón!!
-        Intent intent = new Intent(this, ValorarAsistenciaActivity.class);
-        intent.putExtra("asistentes", asisten);
-        startActivityForResult(intent,VALORACION_OK);
+            //llamar a la actividad de valorar y mandar retorno para ocultar el botón!!
+            Intent intent = new Intent(this, ValorarAsistenciaActivity.class);
+            intent.putExtra("asistentes", asisten);
+            startActivityForResult(intent, VALORACION_OK);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(resultCode==RESULT_OK){
-            final ArrayList<String> final_si_asisten = data.getStringArrayListExtra("final_si_asisten");
-            final ArrayList<String> final_no_asisten = data.getStringArrayListExtra("final_no_asisten");
-            for(int i = 0; i<final_si_asisten.size(); i++){
-                final int j = i;
-                db.collection("Usuarios").addSnapshotListener(new EventListener<QuerySnapshot>() {
-                    @Override
-                    public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
-                        for(DocumentSnapshot doc : documentSnapshots){
-                            if(doc.getString("username").equals(final_si_asisten.get(j))){
-                                usercode = doc.getString("usercode");
-                                rango = doc.getLong("rango");
-                                break;
-                            }
-                        }
-                    }
+        if(resultCode==RESULT_OK) {
+            valorar.setVisibility(View.INVISIBLE);
+            ArrayList<String> usercode_asisten = data.getStringArrayListExtra("usercode_asisten");
+            ArrayList<String> usercode_no_asisten = data.getStringArrayListExtra("usercode_no_asisten");
+            long[] rango_asisten = data.getLongArrayExtra("rango_asisten");
+            long[] rango_no_asisten = data.getLongArrayExtra("rango_no_asisten");
 
-                });
-                rango = rango+5L;
-                db.collection("Usuarios").document(usercode).update("rango",rango);
+            if(usercode_asisten.size()!=0) {
+                for (int i = 0; i < usercode_asisten.size(); i++) {
+                    Long rango = rango_asisten[i];
+                    rango = rango + 5L;
+                    db.collection("Usuarios").document(usercode_asisten.get(i)).update("rango", rango);
+                }
             }
-            for(int i=0; i<final_no_asisten.size();i++){
-                final int j = i;
-                db.collection("Usuarios").addSnapshotListener(new EventListener<QuerySnapshot>() {
-                    @Override
-                    public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
-                        for(DocumentSnapshot doc : documentSnapshots){
-                            if(doc.getString("username").equals(final_no_asisten.get(j))){
-                                usercode = doc.getString("usercode");
-                                rango = doc.getLong("rango");
-                            }
-                        }
+            if(usercode_no_asisten.size()!=0){
+                for(int i=0; i<usercode_no_asisten.size();i++){
+                    Long rango = rango_no_asisten[i];
+                    rango = rango-5L;
+                    db.collection("Usuarios").document(usercode_no_asisten.get(i)).update("rango", rango);
+                }
+            }
+            Toast.makeText(ConsultaQuedadaActivity.this, "Puntuaciones actualizadas correctamente!", Toast.LENGTH_SHORT).show();
 
-                    }
-                });
-                rango = rango-5L;
-                db.collection("Usuarios").document(usercode).update("rango",rango);
-            }
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
