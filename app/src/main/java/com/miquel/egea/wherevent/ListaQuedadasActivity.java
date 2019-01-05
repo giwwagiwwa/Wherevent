@@ -354,12 +354,14 @@ public class ListaQuedadasActivity extends AppCompatActivity {
                     fechaconhorad,
                     (ArrayList<Confirmacion>)data.getSerializableExtra("confirmaciones")
             );
+
             db.collection("Quedadas").add(nueva).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                 @Override
                 public void onSuccess(DocumentReference documentReference) {
                     Log.i("Wherevent", "He grabado la nueva quedada");
                 }
             });
+
         }
         break;
 

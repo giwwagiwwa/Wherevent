@@ -138,19 +138,21 @@ public class ConsultaQuedadaActivity extends AppCompatActivity {
             ActualizarDatos();
         }
         //comprobamos si la fecha es más reciente
-        if(!finalizado){
+        Boolean valorada = getSharedPreferences(titulo,MODE_PRIVATE).getBoolean(titulo,false);
+        if(!finalizado) {
             //comprobamos si eres el creador
-            if(autor.equals(usuario.getUsername())) {
-                valorar.setVisibility(View.VISIBLE);
+            if (autor.equals(usuario.getUsername())) {
+                if(!valorada) valorar.setVisibility(View.VISIBLE);
+                else valorar.setVisibility(View.INVISIBLE);
+            } else {
+                valorar.setVisibility(View.INVISIBLE);
+                //si esta finalizado igualmente ocultamos los botones de votar
             }
-            else valorar.setVisibility(View.INVISIBLE);
-            //si esta finalizado igualmente ocultamos los botones de votar
             aceptar.setVisibility(View.INVISIBLE);
             declinar.setVisibility(View.INVISIBLE);
         }
         else valorar.setVisibility(View.INVISIBLE);
-
-    }
+        }
 
     public void onClickAsistir(View view) {
         ya_existe_user=false;
@@ -230,7 +232,11 @@ public class ConsultaQuedadaActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(resultCode==RESULT_OK) {
+            //evitamos que se valore 2 veces.
+            getSharedPreferences(titulo, MODE_PRIVATE).edit()
+                    .putBoolean(titulo, true).apply();
             valorar.setVisibility(View.INVISIBLE);
+            //
             ArrayList<String> usercode_asisten = data.getStringArrayListExtra("usercode_asisten");
             ArrayList<String> usercode_no_asisten = data.getStringArrayListExtra("usercode_no_asisten");
             long[] rango_asisten = data.getLongArrayExtra("rango_asisten");

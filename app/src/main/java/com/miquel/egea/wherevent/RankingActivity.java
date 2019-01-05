@@ -30,26 +30,34 @@ public class RankingActivity extends AppCompatActivity {
         final TextView nombre_view = findViewById(R.id.nombre_view);
         final TextView mejor_view = findViewById(R.id.mejorview);
         final TextView peor_view = findViewById(R.id.peorview);
-        texto1 = "";
-        texto2 = "";
+
 
 
         db.collection("Usuarios").orderBy("rango",Query.Direction.DESCENDING).addSnapshotListener(RankingActivity.this, new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
                 int cont = 1;
+                texto1 = "";
+                texto2 = "";
                 for (DocumentSnapshot doc : documentSnapshots) {
                     Usuario usuario = new Usuario(doc.getString("username"), doc.getString("usercode"), doc.getLong("rango"));
                     texto1 = texto1 + cont + ".  " + usuario.getUsername() +"\n\n";
                     texto2 = texto2 + "  " + usuario.getRango()+"\n\n";
                     nombre_view.setText(texto1);
                     rangos_view.setText(texto2);
+
+                    if(cont==1){
+                        maxrango = usuario.getRango();
+                        minrango = usuario.getRango();
+                        maxuser = usuario.getUsername();
+                        minuser = usuario.getUsername();
+                    }
                     cont++;
                     if(usuario.getRango()>maxrango){
                         maxrango = usuario.getRango();
                         maxuser = usuario.getUsername();
                     }
-                    else if(usuario.getRango()<minrango){
+                    else if(usuario.getRango()<=minrango){
                         minrango=usuario.getRango();
                         minuser=usuario.getUsername();
                     }

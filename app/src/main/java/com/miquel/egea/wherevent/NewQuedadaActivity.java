@@ -21,6 +21,13 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -51,8 +58,12 @@ public class NewQuedadaActivity extends AppCompatActivity {
     private String timed;
     private String fechaconhora;
     private MyAdapter adapter;
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private ArrayList<String> titulos = new ArrayList<>();
     ArrayList<Confirmacion> confirmaciones;
     Usuario usuario;
+    private boolean mismo_titulo;
+
 
     private void readUser() {
         try {
@@ -70,6 +81,17 @@ public class NewQuedadaActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        db.collection("Quedadas").addSnapshotListener(NewQuedadaActivity.this, new EventListener<QuerySnapshot>() {
+            public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
+                //obtenim els titols dels existents per comparar.
+                titulos.clear();
+                for (DocumentSnapshot doc : documentSnapshots) {
+                    titulos.add(doc.getString("titulo"));
+                }
+            }
+        });
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_quedada);
         tituloedit = this.findViewById(R.id.tituloedit);
@@ -213,6 +235,10 @@ public class NewQuedadaActivity extends AppCompatActivity {
         ComprobarDatosVacios();
 
         //si hay campos vacios creamos un dialogo para que pueda revisar
+        for(int i=0; i<titulos.size();i++) {
+            if(titulo_edit.equals(titulos.get(i))) mismo_titulo=true;
+        }
+
         if(TextoVacioOpcional) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage("No has rellenado todos los campos, deseas crear el evento igualmente?")
@@ -250,6 +276,21 @@ public class NewQuedadaActivity extends AppCompatActivity {
                     });
             AlertDialog dialog = builder.create();
             dialog.show();
+        }
+        else if(mismo_titulo){
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("Ya existe un evento con el mismo título!")
+                    .setTitle("Evento duplicado")
+                    .setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                        }
+                    });
+            AlertDialog dialog = builder.create();
+            dialog.show();
+            tituloedit.setText("");
+            titulo_edit = "";
+            mismo_titulo=false;
         }
         else EnviarDatos();
     }
