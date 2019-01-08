@@ -65,6 +65,7 @@ public class NewQuedadaActivity extends AppCompatActivity {
     private boolean mismo_titulo;
 
 
+
     private void readUser() {
         try {
             FileInputStream inputStream = openFileInput("usuario.txt");
@@ -137,6 +138,7 @@ public class NewQuedadaActivity extends AppCompatActivity {
         };
 
         horaedit.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View view) {
                 Calendar cal = Calendar.getInstance();
@@ -156,7 +158,9 @@ public class NewQuedadaActivity extends AppCompatActivity {
         horaeditListener = new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker datePicker, int hora, int minutos) {
-                String time = hora + ":" + minutos + " h.";
+                String time;
+                if(minutos<10) time = hora + ":" + "0"+minutos + " h.";
+                else time = hora + ":" + minutos + " h.";
                 timed = hora + ":" + minutos + ":" + "00";
                 horaedit.setText(time);
             }
@@ -225,12 +229,6 @@ public class NewQuedadaActivity extends AppCompatActivity {
     //fin recycler view iconos
 
     public void onClickCrear(View view) {
-        //cogemos los campos introducidos por el usuario
-        titulo_edit = tituloedit.getText().toString();
-        ubicacion_edit = ubicacionedit.getText().toString();
-        descripcion_edit = descripcionedit.getText().toString();
-        fechaconhora = dated +" "+ timed;
-        confirmaciones.add(new Confirmacion(usuario.getUsername(), 1L));
         //comprobamos si el usuario ha escrito en todos los campos
         ComprobarDatosVacios();
 
@@ -244,15 +242,14 @@ public class NewQuedadaActivity extends AppCompatActivity {
             builder.setMessage("No has rellenado todos los campos, deseas crear el evento igualmente?")
                     .setTitle("Campos incompletos!")
                     .setIcon(R.drawable.cross)
-                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    .setPositiveButton("Si", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             ComprobarDatosObligatorios();
                         }})
-                    .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                    .setNegativeButton("No crear", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            Toast.makeText(NewQuedadaActivity.this, "Evento no creado", Toast.LENGTH_SHORT).show();
                     }
                     });
             AlertDialog dialog = builder.create();
@@ -262,6 +259,26 @@ public class NewQuedadaActivity extends AppCompatActivity {
         else{
             ComprobarDatosObligatorios();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        ComprobarDatosVacios();
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("De verdad quieres descartar este evento?")
+                    .setPositiveButton("Seguir editando", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                        }
+                    })
+                    .setNegativeButton("Descartar evento", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            NewQuedadaActivity.super.onBackPressed();
+                        }
+                    });
+            AlertDialog dialog = builder.create();
+            dialog.show();
     }
 
     private void ComprobarDatosObligatorios() {
@@ -296,6 +313,7 @@ public class NewQuedadaActivity extends AppCompatActivity {
     }
 
     public void EnviarDatos(){
+        confirmaciones.add(new Confirmacion(usuario.getUsername(), 1L));
         Intent data = new Intent();
         data.putExtra("titulo",titulo_edit);
         data.putExtra("ubicacion",ubicacion_edit);
@@ -307,6 +325,13 @@ public class NewQuedadaActivity extends AppCompatActivity {
         finish();
     }
     public void ComprobarDatosVacios(){
+        //cogemos los campos introducidos por el usuario
+        titulo_edit = tituloedit.getText().toString();
+        ubicacion_edit = ubicacionedit.getText().toString();
+        descripcion_edit = descripcionedit.getText().toString();
+        fechaconhora = dated +" "+ timed;
+
+
         if(titulo_edit.equals("")){ TextoVacioObligatorio = true; }
         if(ubicacion_edit.equals("")){ TextoVacioObligatorio = true; }
         if(fechaedit.toString().equals("")){ TextoVacioObligatorio = true; }

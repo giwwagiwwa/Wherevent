@@ -30,9 +30,7 @@ public class RankingActivity extends AppCompatActivity {
         final TextView nombre_view = findViewById(R.id.nombre_view);
         final TextView mejor_view = findViewById(R.id.mejorview);
         final TextView peor_view = findViewById(R.id.peorview);
-
-
-
+        //recogemos los usuarios totales del firebase y sus rangos
         db.collection("Usuarios").orderBy("rango",Query.Direction.DESCENDING).addSnapshotListener(RankingActivity.this, new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {

@@ -86,13 +86,15 @@ public class ListaQuedadasActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //al iniciar el programa grabamos la preferencia compartida como true para que entre en la pantalla del login
         Boolean isFirstRun = getSharedPreferences("PREFERENCE", MODE_PRIVATE)
                 .getBoolean("isFirstRun", true);
-        //consultamos el user
+        //accedemos al login la primera vez solo
         if(isFirstRun){
             Intent intent = new Intent(this, LoginActivity.class);
             startActivityForResult(intent, NUEVOUSUARIO);
         }
+        //si no accedemos al login leemos el usuario del fichero txt
         readUser();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lista_quedadas);
@@ -108,7 +110,7 @@ public class ListaQuedadasActivity extends AppCompatActivity {
                 startActivityForResult(intent, NUEVA_QUEDADA);
             }
         });
-
+        //lista local de eventos de la clase Quedada
         quedadas = new ArrayList<>();
         if(!isFirstRun) Toast.makeText(this, "Qué bien que hayas vuelto "+usuario.getUsername()+"!", Toast.LENGTH_SHORT).show();
         //layout y adaptador RecyclerView
@@ -130,6 +132,7 @@ public class ListaQuedadasActivity extends AppCompatActivity {
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
                 int position = viewHolder.getAdapterPosition();
+                //comprovamos la fecha actual para evitar confirmaciones una vez terminado el evento
                 if (quedadas.get(position).getFechaconhora().before(Calendar.getInstance().getTime())) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(ListaQuedadasActivity.this);
                     builder.setMessage("No se puede confirmar la asistencia en un evento ya finalizado.");
@@ -143,6 +146,8 @@ public class ListaQuedadasActivity extends AppCompatActivity {
                     adapter.notifyDataSetChanged();
 
                 } else {
+                    //en caso de no estar finalizado obtenemos los asistentes y no asistentes para comprovar si el usuario
+                    //ya ha votado o no y actualizar su nueva decisión
                     ArrayList<Confirmacion> confirmacions = (ArrayList<Confirmacion>) quedadas.get(position).getConfirmaciones();
                     ArrayList<String> asisten = new ArrayList<>();
                     ArrayList<String> noAsisten = new ArrayList<>();
@@ -191,7 +196,7 @@ public class ListaQuedadasActivity extends AppCompatActivity {
                                 noAsisten.remove(i);//si estaba a l'altre llista l'eliminem
                         }
                         for (int i = 0; i < asisten.size(); i++) {
-                            if (asisten.get(i).equals(usuario.getUsername())) ya_existe_user = true;
+                            if (asisten.get(i).equals(usuario.getUsername())) ya_existe_user = true; //si hay que añadirlo marcamos
                         }
                         if (!ya_existe_user)
                             asisten.add(usuario.getUsername()); //l'afegim a la llista correcta si no
@@ -268,6 +273,8 @@ public class ListaQuedadasActivity extends AppCompatActivity {
 
     @Override
     protected void onStart() {
+        //actualizamos el total de usuarios y cargamos su identificador en firebase
+        //también actualizamos los datos de la lista de quedadas local a partir de firebase
         db.collection("Usuarios").addSnapshotListener(ListaQuedadasActivity.this, new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
@@ -330,7 +337,8 @@ public class ListaQuedadasActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
     //FIN MENU 3 PUNTOS
-    //recuperamos info de la creación de un evento nuevo
+
+    //recuperamos info de la creación de un evento nuevo y de un nuevo user
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode){
@@ -344,7 +352,7 @@ public class ListaQuedadasActivity extends AppCompatActivity {
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-
+            //creamos un nuevo objeto quedada con los datos del intent
             Quedada nueva = new Quedada(null,
                     data.getStringExtra("titulo"),
                     data.getStringExtra("descripción"),
@@ -354,7 +362,7 @@ public class ListaQuedadasActivity extends AppCompatActivity {
                     fechaconhorad,
                     (ArrayList<Confirmacion>)data.getSerializableExtra("confirmaciones")
             );
-
+            //generamos la nueva quedada en firebase para luego actualizar la lista local en el onStart
             db.collection("Quedadas").add(nueva).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                 @Override
                 public void onSuccess(DocumentReference documentReference) {
@@ -367,16 +375,17 @@ public class ListaQuedadasActivity extends AppCompatActivity {
 
             case NUEVOUSUARIO:
                 if(resultCode==RESULT_OK){
+                    //consultamos el archivo txt con el user creado y lo saludamos
                     readUser();
                     Toast.makeText(ListaQuedadasActivity.this,"Bienvenido "+usuario.getUsername()+"!", Toast.LENGTH_SHORT).show();
                 }
                 break;
     }
-
         super.onActivityResult(requestCode, resultCode, data);
     }
 
     public void onClickRanking(MenuItem item) {
+        //llamamos a la actividad del ranking
         Intent intent = new Intent(ListaQuedadasActivity.this,RankingActivity.class);
         startActivity(intent);
     }
@@ -417,7 +426,8 @@ public class ListaQuedadasActivity extends AppCompatActivity {
                 }
             });
 
-            //añadimos un listener de long click a los elementos quedadas
+            //añadimos un listener de long click a los elementos quedadas para poder eliminarlo si
+            //se trata del autor de la misma
             itemView.setOnLongClickListener(new View.OnLongClickListener(){
                 @Override
                 public boolean onLongClick(View view) {
@@ -434,6 +444,7 @@ public class ListaQuedadasActivity extends AppCompatActivity {
         boolean finalizado = false;
         Intent intent = new Intent(this, ConsultaQuedadaActivity.class);
         Date fechaconhorad = quedadas.get(evento_position).getFechaconhora();
+        //si la fecha actual es pasada a la propuesta en el evento marcamos como true finalizado
         if(fechaconhorad.after(Calendar.getInstance().getTime()))finalizado = true;
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
             String fechaconhora = sdf.format(fechaconhorad);
@@ -462,6 +473,7 @@ public class ListaQuedadasActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 if(usuario.getUsername().equals(quedadas.get(position).getAutor())) removeitem(position);
+                //solo el autor del evento puede eliminarlo
                 else Toast.makeText(ListaQuedadasActivity.this, "Solo el creador del evento puede eliminarlo.", Toast.LENGTH_LONG).show();
             }
         });
@@ -487,12 +499,6 @@ public class ListaQuedadasActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
 
-            db.collection("Usuarios").addSnapshotListener(ListaQuedadasActivity.this, new EventListener<QuerySnapshot>() {
-                @Override
-                public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
-                    TotalUsuarios = documentSnapshots.size();
-                }
-            });
             Quedada model_item = quedadas.get(position);
             //convertimos la hora de Date a String
             Date fechaconhorad = model_item.getFechaconhora();
@@ -510,6 +516,7 @@ public class ListaQuedadasActivity extends AppCompatActivity {
                 ArrayList<String> asisten = new ArrayList<>();
                 ArrayList<String> noAsisten = new ArrayList<>();
                 ArrayList<Confirmacion> lista = (ArrayList<Confirmacion>) model_item.getConfirmaciones();
+                //separamos de la lista de confirmaciones los que asisten y los que no
                 for(int i=0; i<lista.size();i++){
                     if(lista.get(i).getConfirma()==0){ //no asisten
                         noAsisten.add(lista.get(i).getCodigo_usuario());
@@ -518,13 +525,15 @@ public class ListaQuedadasActivity extends AppCompatActivity {
                         asisten.add(lista.get(i).getCodigo_usuario());
                     }
                 }
+                //el número de asistentes y no asistentes es el tamaño de estas listas
                 Integer asist = asisten.size();
                 Integer noasist = noAsisten.size();
+                //protegemos valores extraños
                 if(asist==null)asist=0;
                 if(noasist==null)noasist=0;
                 holder.asistenview.setText(asist.toString());
                 holder.noasistenview.setText(noasist.toString());
-
+                //los que no contestan son la resta del total menos los que han dicho que si y los que han dicho que no
                 Integer nocontestan = TotalUsuarios-asist-noasist;
                 if(nocontestan==null | nocontestan<0) holder.nocontestanview.setText("0");
                 else holder.nocontestanview.setText(nocontestan.toString());

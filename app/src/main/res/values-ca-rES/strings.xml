@@ -6,11 +6,11 @@
     <string name="hint_location">Ubicació</string>
     <string name="hint_hour">Hora</string>
     <string name="btn_create">Crear</string>
-    <string name="the_good_one">\"El que no falla mai\"</string>
+    <string name="the_good_one">Qui no falla mai</string>
     <string name="hint_login">escrigui aquí...</string>
-    <string name="hint_title_event">Títol de la quedada...</string>
+    <string name="hint_title_event">Títol de l\'esdeveniment...</string>
     <string name="hint_description">Descripció</string>
     <string name="hint_date">Data</string>
-    <string name="the_bad_one">\"El que sempre es raja\"</string>
+    <string name="the_bad_one">Qui sempre falla</string>
     <string name="title_cofirmation_list">Llista de Confirmació</string>
 </resources>

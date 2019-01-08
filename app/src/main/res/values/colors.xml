@@ -6,6 +6,7 @@
     <color name="alta">#ffffff</color>
     <color name="aceptar">#47dd92</color>
     <color name="rechazar">#db4949</color>
-    <color name="fondo">#8d316aa1</color>
+    <color name="fondo">#ceddecfb</color>
     <color name="pasado">#87e4e4e4</color>
+    <color name="button2">#8da5cef8</color>
 </resources>

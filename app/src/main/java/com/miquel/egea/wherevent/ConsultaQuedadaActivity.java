@@ -79,6 +79,7 @@ public class ConsultaQuedadaActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //leemos el usuario
         readUser();
         setContentView(R.layout.activity_consulta_quedada);
         tituloview = findViewById(R.id.titleview);
@@ -99,6 +100,7 @@ public class ConsultaQuedadaActivity extends AppCompatActivity {
 
         Intent data = getIntent();
         if (data!=null){
+            //recogemos los datos del intent
             identificador_quedada = data.getStringExtra("identificador");
             titulo = data.getStringExtra("titulo");
             tituloview.setText(titulo);
@@ -115,7 +117,7 @@ public class ConsultaQuedadaActivity extends AppCompatActivity {
             finalizado = data.getBooleanExtra("finalizado",false);
 
             tipoevento = data.getLongExtra("tipoevento",-1);
-            //comprobamos si ha clicado en un icono
+            //comprobamos si ha clicado en un icono, sino cargamos el por defecto
             if(tipoevento ==-1){
                 iconoview.setImageResource(R.drawable.wherevent);
             }
@@ -126,6 +128,7 @@ public class ConsultaQuedadaActivity extends AppCompatActivity {
 
             asisten = new ArrayList<>();
             noAsisten = new ArrayList<>();
+            //separamos los que han dicho que si y los que no
             for(int i=0; i<confirmacions.size();i++){
                     if(confirmacions.get(i).getConfirma()==0){ //no asisten
                         noAsisten.add(confirmacions.get(i).getCodigo_usuario());
@@ -134,11 +137,14 @@ public class ConsultaQuedadaActivity extends AppCompatActivity {
                         asisten.add(confirmacions.get(i).getCodigo_usuario());
                     }
             }
-
+            //actualizamos las listas de asistentes y no asistentes
             ActualizarDatos();
         }
         //comprobamos si la fecha es más reciente
         Boolean valorada = getSharedPreferences(titulo,MODE_PRIVATE).getBoolean(titulo,false);
+        //si esta finalizado comprobamos si es el creador del evento para mostrar o no el botón de valorar
+        //Si ya se ha valorado (valorada = true) ocultamos el boton (valorar)
+        //si esta finalizado además ocultamos los botones de confirmar asistencia
         if(!finalizado) {
             //comprobamos si eres el creador
             if (autor.equals(usuario.getUsername())) {
@@ -205,6 +211,8 @@ public class ConsultaQuedadaActivity extends AppCompatActivity {
 
     @Override
     protected void onStop() {
+        //actualizamos la lista de eventos del firebase
+        //convertimos la lista en HashMap y actualizamos el campo
         ArrayList<Object> confirmaciones = new ArrayList<>();
         for(int i=0; i<asisten.size();i++){
             HashMap<String,Object> map = new HashMap<>();
@@ -232,16 +240,18 @@ public class ConsultaQuedadaActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(resultCode==RESULT_OK) {
-            //evitamos que se valore 2 veces.
+            //evitamos que se valore 2 veces actualizando la preferencia compartida
             getSharedPreferences(titulo, MODE_PRIVATE).edit()
                     .putBoolean(titulo, true).apply();
+            //ocultamos el botón para al volver de la valoración.
             valorar.setVisibility(View.INVISIBLE);
-            //
+            //obtenemos las listas de los asistentes finales y sus rangos actuales
             ArrayList<String> usercode_asisten = data.getStringArrayListExtra("usercode_asisten");
             ArrayList<String> usercode_no_asisten = data.getStringArrayListExtra("usercode_no_asisten");
             long[] rango_asisten = data.getLongArrayExtra("rango_asisten");
             long[] rango_no_asisten = data.getLongArrayExtra("rango_no_asisten");
 
+            //sumamos 5 puntos si dijeron que iban a asistir y finalmente asistieron
             if(usercode_asisten.size()!=0) {
                 for (int i = 0; i < usercode_asisten.size(); i++) {
                     Long rango = rango_asisten[i];
@@ -249,6 +259,7 @@ public class ConsultaQuedadaActivity extends AppCompatActivity {
                     db.collection("Usuarios").document(usercode_asisten.get(i)).update("rango", rango);
                 }
             }
+            //restamos 5 puntos si dijeron que iban a asistir y finalmente no asistieron
             if(usercode_no_asisten.size()!=0){
                 for(int i=0; i<usercode_no_asisten.size();i++){
                     Long rango = rango_no_asisten[i];
