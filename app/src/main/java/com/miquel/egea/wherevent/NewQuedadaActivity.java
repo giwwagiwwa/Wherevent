@@ -283,6 +283,7 @@ public class NewQuedadaActivity extends AppCompatActivity {
 
     private void ComprobarDatosObligatorios() {
         if(TextoVacioObligatorio){
+            TextoVacioObligatorio=false;
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage("No has rellenado los campos obligatorios: \n Título, Ubicación, Fecha y hora")
                     .setTitle("Campos obligatorios incompletos!")
@@ -330,7 +331,6 @@ public class NewQuedadaActivity extends AppCompatActivity {
         ubicacion_edit = ubicacionedit.getText().toString();
         descripcion_edit = descripcionedit.getText().toString();
         fechaconhora = dated +" "+ timed;
-
 
         if(titulo_edit.equals("")){ TextoVacioObligatorio = true; }
         if(ubicacion_edit.equals("")){ TextoVacioObligatorio = true; }
