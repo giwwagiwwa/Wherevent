@@ -8,10 +8,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -40,13 +38,18 @@ public class ValorarAsistenciaActivity extends AppCompatActivity {
         setContentView(R.layout.activity_valorar_asistencia);
         Intent data = getIntent();
         asisten = (ArrayList<String>) data.getSerializableExtra("asistentes");
+        String fecha = data.getStringExtra("fecha");
+        String titulo = data.getStringExtra("titulo");
         final_si_asisten=new ArrayList<>();
         final_no_asisten= new ArrayList<>();
         RecyclerView mylist = findViewById(R.id.confirmar_view);
         mylist.setLayoutManager(new LinearLayoutManager(this));
         mylist.setAdapter(new MyAdapter());
         final_si_asisten.addAll(asisten);
-
+        TextView title_view = findViewById(R.id.titulo_view);
+        TextView fecha_view = findViewById(R.id.fecha_view);
+        title_view.setText(titulo);
+        fecha_view.setText(fecha);
 
     }
 
@@ -61,6 +64,8 @@ public class ValorarAsistenciaActivity extends AppCompatActivity {
                 }
             }
         });
+
+
         super.onStart();
     }
 

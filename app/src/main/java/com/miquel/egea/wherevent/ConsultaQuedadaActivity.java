@@ -234,6 +234,8 @@ public class ConsultaQuedadaActivity extends AppCompatActivity {
             //llamar a la actividad de valorar y mandar retorno para ocultar el botón!!
             Intent intent = new Intent(this, ValorarAsistenciaActivity.class);
             intent.putExtra("asistentes", asisten);
+            intent.putExtra("fecha",fecha);
+            intent.putExtra("titulo",titulo);
             startActivityForResult(intent, VALORACION_OK);
     }
 
